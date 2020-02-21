@@ -1,0 +1,10 @@
+[Unit]
+Description=Startup service
+After=network-online.service
+
+[Service]
+ExecStart=node /var/www/server/server.js
+User=root
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+echo 1 > /var/www/html/state
+
+STATE=2
+while true;
+do
+	while read COMMAND; 
+	do 
+		if [ $STATE -ne $COMMAND ]
+		then
+			vcgencmd display_power $COMMAND > /dev/null
+			STATE=$COMMAND
+		fi
+	done < /var/www/html/state
+done
+

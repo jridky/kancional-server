@@ -1,0 +1,3 @@
+#!/bin/bash
+
+chromium-browser --start-fullscreen --display=:0 --flag-switches-begin --app=http://localhost 
