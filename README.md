@@ -16,7 +16,7 @@ V tomto bodě osobně doporučuji zařízení **Ubiquiti od společnosti UniFi**
 
 
 ## Server
-Za server je považováno zařízení Raspberry Pi, na kterém je nainstalovaný operační systém Raspbian a které je připojené k lokální síti v kostele a má **pevně přidělenou IP adresu na hodnotu 10.0.0.1.**
+Za server je považováno zařízení Raspberry Pi, na kterém je nainstalovaný operační systém Raspbian a které je připojené k lokální síti v kostele a má **aktivní službu mDNS prostřednictvím programu avahi.**
 
 ## Zdrojové kódy
 Soubory v jednotlivých složkách korespondují s adresářovou strukturou tohoto operačního systému. Pro správnou funkci je zapotřebí mít na systému nainstalované
