@@ -2,7 +2,7 @@
 
 Následující složka obsahuje verzi kódu pro zařízení, které má zastávat dvojí úlohu: má být serverem i číselníkem zároveň.
 
-Pro toto zařízení platí, že se jedná o Raspberry Pi ke kterému je pomocí HDMI kabelu připojen prakticky libovolný monitor a kterému je pevně přidělena adresa 10.0.0.1. Z důvodu bezpečnosti doporučuji, aby přiřazení této adresy bylo provedeno na straně směrovače a to na základe MAC adresy serveru.
+Pro toto zařízení platí, že se jedná o Raspberry Pi ke kterému je pomocí HDMI kabelu připojen prakticky libovolný monitor.
 
 Při výběru monitoru doporučuji dát přednost takovým, které jsou lehčí, bez velkého rámečku či příliš rušivých ovládacích tlačítek,
 s možností upevnění na stěnu, poměrem stran 4:3 či 16:9, matným displejem a vyšší svítivostí.
@@ -21,6 +21,25 @@ Po úspěšné instalaci upravte patřičné soubory pod složkou `/etc`, jako j
 
 ```
 sudo systemctl enable apache2
+```
+
+Dále je zapotřebí nastavit službu mDNS, kterou zajišťuje služba `avahi`. Tato služba by již měla být na vašem Raspberry Pi automaticky nainstalovaná, povolená a spuštěná. Toto můžete ověřit příkazem:
+
+```
+systemctl status avahi-daemon.service
+```
+kde byste měli vidět danou službu povolenou (enabled) a spuštěnou (running).
+
+První část nastavení této služby jste provedli nakopírováním souborů do složky `etc`.
+Pro druhou část je zapotřebí upravit soubor `/etc/avahi/avahi-daemon.conf`.
+
+V tomto souboru upravte jediný řádek:
+```
+#host-name=foo
+```
+opravte na
+```
+host-name=kancional
 ```
 
 V popisu předpokládám, že při instalaci systému byl jako název pro uživatele zvolen řetězec **pi**.
@@ -82,6 +101,7 @@ V případě problémů s fungováním zařízení můžete zkontrolovat stav sl
 systemctl status startup
 systemctl status serverstart
 systemctl status donoff
+systemctl status avahi-daemon.service
 ```
 
 V případě přetrvávajících problémů mě kontaktujte na emailu [J.Ridky@gmail.com](mailto:J:Ridky@gmail.com).

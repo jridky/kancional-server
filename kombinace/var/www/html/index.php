@@ -86,7 +86,7 @@ img {
 </body>
 
 <script>
-var time = 0, screen = true, timeout = false, socket = false;
+var screen = true, timeout = false, socket = false;
 $(function(){
 	$("#number").css("color","red");
 	checkSocket();
@@ -133,39 +133,36 @@ function offScreen(){
 }
 
 function displayValue(answer){
-	if(time < parseInt(answer.time)){
-		time = parseInt(answer.time);
-		if(answer.psalm == ""){
-			$("#number .centered").html(answer.song);
-			if(answer.verse != "" && answer.verse != "0"){
-				$("#verse .centered").html(answer.verse+". sloka");
-				$("#number").css("height", "50%");
-				$("#verse").show();
-			}else{
-				$("#verse .centered").html("");
-				$("#verse").hide();
-				$("#number").css("height", "100%");
-			}
-			$("#add").hide();
-			$("#number").show();
-			$("#number").css("font-size", "50em");
-			while( $("#number").innerHeight() < $("#number").prop("scrollHeight")  || $("#number").innerWidth() < $("#number").prop("scrollWidth") ){
-				var value = parseInt($("#number").css("font-size"));
-				value = value - 10;
-				$("#number").css("font-size", value+"px");
-			}
-			$("#number").show();
-			$("#psalm").hide();
+	if(answer.psalm == ""){
+		$("#number .centered").html(answer.song);
+		if(answer.verse != "" && answer.verse != "0"){
+			$("#verse .centered").html(answer.verse+". sloka");
+			$("#number").css("height", "50%");
+			$("#verse").show();
 		}else{
-			$("#psalm .centered").html(answer.psalm);
-			$("#number, #verse, #add").hide();
-			$("#psalm").show();
-			$("#psalm").css("font-size", "30em");
-			while( $("#psalm").innerHeight() < $("#psalm").prop("scrollHeight") ){
-				var value = parseInt($("#psalm").css("font-size"));
-				value = value - 10;
-				$("#psalm").css("font-size", value+"px");
-			}
+			$("#verse .centered").html("");
+			$("#verse").hide();
+			$("#number").css("height", "100%");
+		}
+		$("#add").hide();
+		$("#number").show();
+		$("#number").css("font-size", "50em");
+		while( $("#number").innerHeight() < $("#number").prop("scrollHeight")  || $("#number").innerWidth() < $("#number").prop("scrollWidth") ){
+			var value = parseInt($("#number").css("font-size"));
+			value = value - 10;
+			$("#number").css("font-size", value+"px");
+		}
+		$("#number").show();
+		$("#psalm").hide();
+	}else{
+		$("#psalm .centered").html(answer.psalm);
+		$("#number, #verse, #add").hide();
+		$("#psalm").show();
+		$("#psalm").css("font-size", "30em");
+		while( $("#psalm").innerHeight() < $("#psalm").prop("scrollHeight") ){
+			var value = parseInt($("#psalm").css("font-size"));
+			value = value - 10;
+			$("#psalm").css("font-size", value+"px");
 		}
 	}
 	if(jQuery.isEmptyObject(answer)){

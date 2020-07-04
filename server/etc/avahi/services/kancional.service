@@ -1,0 +1,9 @@
+<?xml version="1.0" standalone='no' ?>
+<!DOCTYPE service-group SYSTEM "avahi-service.dtd">
+<service-group>
+	<name>Kancional-Server</name>
+	<service>
+		<type>_http._tcp</type>
+		<port>2020</port>
+	</service>
+</service-group>
