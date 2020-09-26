@@ -69,6 +69,11 @@ Změnu barev můžete provést úpravou kaskádových stylů v souboru `/var/www
 
 ## Řešení problémů
 
+#### Vyskakovací okno o aktualizaci Chromia
+V systému Rasbpian se cca od verze 78 aplikace Chromium stává, že po určité době vyskočí menší okno s informací o aktualizaci aplikace Chromium. Jedná se o novou funkci, která dříve v Chromiu nebyla, ovšem má za následek překrytí okna číselníku touto hláškou.
+
+Řešením je přidání souboru, který je umístěn pod složkou `/etc/chromium-browser/customizations/` tohoto repozitáře do stejného místa na Raspberry Pi. Dále je potřeba přidat řádek do `/etc/crontab`, jako je uveden ve stejném souboru tohoto repozitáře.
+
 V případě problémů s fungováním číselníku můžete zkontrolovat stav služeb a chybový výstup zařízení pomocí příkazů:
 
 ```

@@ -55,7 +55,7 @@ var wsServer = new webSocketServer({
     httpServer: server
 });
 
-const myFile = "/var/www/html/number";
+const myFile = "/var/www/server/number";
 let fsWait = false;
 
 fs.watch(myFile, (event, filename) => {
