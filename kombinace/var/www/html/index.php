@@ -159,7 +159,7 @@ function displayValue(answer){
 		$("#number, #verse, #add").hide();
 		$("#psalm").show();
 		$("#psalm").css("font-size", "30em");
-		while( $("#psalm").innerHeight() < $("#psalm").prop("scrollHeight") ){
+		while( $("#psalm").innerHeight() < $("#psalm").prop("scrollHeight") || $("#psalm").innerWidth() < $("#psalm").prop("scrollWidth")){
 			var value = parseInt($("#psalm").css("font-size"));
 			value = value - 10;
 			$("#psalm").css("font-size", value+"px");
