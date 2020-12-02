@@ -18,6 +18,7 @@ var http = require('http');
  */
 // list of currently connected clients (users)
 var clients = [ ];
+var tvStatus = true;
 /**
  * HTTP server
  */
@@ -28,7 +29,7 @@ var server = http.createServer(function(request, response) {
             d = {};
         }else{
             var fields = data.split(";");
-            d = {song: fields[1], verse: fields[2], source: fields[3], package: fields[4], psalm: fields[5], time: fields[0]};
+            d = {song: fields[1], verse: fields[2], source: fields[3], package: fields[4], psalm: fields[5], time: fields[0], tv: tvStatus};
             if (fields[0] == "0"){
                 d = {};
             }
@@ -69,7 +70,7 @@ fs.watch(myFile, (event, filename) => {
             d = {};
         }else{ 
             var fields = data.split(";");
-            d = {song: fields[1], verse: fields[2], source: fields[3], package: fields[4], psalm: fields[5], time: fields[0]};
+            d = {song: fields[1], verse: fields[2], source: fields[3], package: fields[4], psalm: fields[5], time: fields[0], tv: tvStatus};
             if (fields[0] == "0"){
                 d = {};
             }
@@ -97,7 +98,7 @@ wsServer.on('request', function(request) {
             d = {};
         }else{ 
             var fields = data.split(";");
-            d = {song: fields[1], verse: fields[2], source: fields[3], package: fields[4], psalm: fields[5], time: fields[0]};
+            d = {song: fields[1], verse: fields[2], source: fields[3], package: fields[4], psalm: fields[5], time: fields[0], tv: tvStatus};
             if (fields[0] == "0"){
                 d = {};
             }
@@ -120,6 +121,11 @@ wsServer.on('request', function(request) {
             var json = JSON.parse(message.utf8Data)
             if(json.crc === md5(`${origin}|${passwd}`)){
                 connection.sendUTF("ok");
+                if(json.tv === false){
+                    tvStatus = json.tv;
+                } else if(json.tv === true){
+                    tvStatus = json.tv;
+                }
                 fs.writeFile(myFile, `${json.time};${json.song};${json.verse};${json.source};${json.package};${json.psalm}`, 'utf8', function(err){
                     if(err){ 
                         console.log(err);
