@@ -1,0 +1,9 @@
+[Unit]
+Description=Startup service
+
+[Service]
+ExecStart=/usr/bin/startup
+User=pi
+
+[Install]
+WantedBy=multi-user.target

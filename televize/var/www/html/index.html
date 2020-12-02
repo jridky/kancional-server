@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<script src="jquery-3.4.1.min.js"></script>
+<style>
+html, body{
+   background: black;
+   width: 100%;
+   height: 100%;
+   overflow: hidden;
+   color: white;
+   cursor: none;
+   font-family: Arial;
+   padding: 0px;
+   margin: 0px;
+}
+
+#number, #verse{
+   margin: 0px;
+   padding: 0px;
+   text-align: center;
+   position: fixed;
+   top: 0px;
+   right: 0px;
+   background: black;
+}
+
+#verse{
+   top: 12%;
+}
+
+#psalm {
+    position: fixed;
+    bottom: 0px;
+    padding: 0px;
+    margin: 0px;
+    background: black;
+    width: 100%;
+}
+
+#number, #verse{
+   height: 15%;
+   width: 20%;
+   line-height: 1.5em;
+}
+
+#number{
+  font-size: 5vw;
+  letter-spacing: 10px;
+  text-indent: 10px;
+  font-weight: bold;
+}
+
+#verse{
+  font-size: 4vw;
+}
+
+#psalm{
+  font-size: 10em;
+  height: 20%;
+}
+
+.centered{
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+#psalm.solo{
+  top: 10%;
+  height: 75%;
+}
+
+</style>
+</head>
+<body>
+<video id="video" width="100%" height="100%" autoplay></video>
+<div id="number">
+<div class="centered"></div>
+</div>
+<div id="verse">
+ <div class="centered">
+ </div>
+</div>
+<div id="psalm">
+<div class="centered">
+</div>
+</div>
+</body>
+
+<script>
+var timeout, socket = false;
+$(function(){
+	$("#number").css("color","white");
+	var video = document.querySelector("#video");
+
+	if (navigator.mediaDevices.getUserMedia) {
+		navigator.mediaDevices.getUserMedia({ video: true })
+		    .then(function (stream) {
+			video.srcObject = stream;
+		    })
+		    .catch(function (error) {
+			  console.log("Something went wrong!");
+    		});
+	}
+	checkSocket();
+	setInterval(checkSocket, 1800);
+});
+
+function checkSocket(){
+	if(socket != false){
+		if(socket.readyState != WebSocket.CLOSED){
+			return;
+		}
+	}
+	socket = new WebSocket('ws://kancional.local:2020');
+	socket.addEventListener('message', getMessage, event);
+}
+
+function getMessage (event){
+	try{
+		var answer = JSON.parse(event.data);
+		if(timeout != false){
+			clearTimeout(timeout);
+		}
+		timeout = setTimeout(offScreen, 8800000);
+		displayValue(answer);
+	}catch(error){
+		offScreen();
+	}
+}
+
+function offScreen(){
+	clearTimeout(timeout);
+	timeout = false;
+    $("#psalm, #verse, #number").hide();
+    $("#video").show();
+}
+
+function displayValue(answer){
+    if(answer.tv === false){
+        $("#video").hide();
+        $("#psalm").addClass("solo");
+    } else {
+        $("#video").show();
+        $("#psalm").removeClass("solo");
+    }
+
+	if(answer.psalm == ""){
+		if(answer.song == ""){
+			$("#number, #verse").hide();
+		} else {
+			$("#number .centered").html(answer.song);
+			if(answer.verse != "" && answer.verse != "0"){
+				$("#verse .centered").html(answer.verse+". sloka");
+				$("#verse").show();
+			}else{
+				$("#verse .centered").html("");
+				$("#verse").hide();
+			}
+			$("#number").show();
+		}
+		$("#psalm").hide();
+	}else{
+		$("#psalm .centered").html(answer.psalm);
+		$("#number, #verse").hide();
+		$("#psalm").show();
+		$("#psalm").css("font-size", "30em");
+		while( $("#psalm").innerHeight() < $("#psalm").prop("scrollHeight") ){
+			var value = parseInt($("#psalm").css("font-size"));
+			value = value - 10;
+			$("#psalm").css("font-size", value+"px");
+		}
+	}
+
+	if(jQuery.isEmptyObject(answer)){
+		$("#psalm, #verse, #number").hide();
+		clearTimeout(timeout);
+		timeout = false;
+	}
+}
+</script>
+</html>
+
