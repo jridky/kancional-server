@@ -17,7 +17,7 @@ var http = require('http');
  * Global variables
  */
 // list of currently connected clients (users)
-var clients = [ ];
+var clients = new Set();
 var tvStatus = true;
 /**
  * HTTP server
@@ -76,21 +76,21 @@ fs.watch(myFile, (event, filename) => {
             }
         }
         var json = JSON.stringify(d);
-        for (var i=0; i < clients.length; i++) {
-            clients[i].sendUTF(json);
-        }
+        clients.forEach(function send(key, value, set){
+            value.sendUTF(json);
+        });
     });
 });
 
 // This callback function is called every time someone
 // tries to connect to the WebSocket server
 wsServer.on('request', function(request) {
-    console.log((new Date()) + ' Connection from origin '
-        + request.origin + '.');
+    console.log((new Date()) + ' New connection from origin '
+        + request.origin + ' - IP: ' + request.socket.remoteAddress + '.');
     var connection = request.accept(null, request.origin); 
-    // we need to know client index to remove them on 'close' event
-    var index = clients.push(connection) - 1;
-    var origin = request.origin;
+    var ip = request.socket.remoteAddress, origin = request.origin;
+
+    clients.add(connection);
 
     fs.readFile(myFile, 'utf8', function (err, data){
         var d;
@@ -109,9 +109,9 @@ wsServer.on('request', function(request) {
 
     // user disconnected
     connection.on('close', function(connection) {
-        console.log((new Date()) + ' connection from origin ' + origin + ' has been closed.');
+        console.log((new Date()) + ' Closing connection from origin ' + origin + ' - IP ' + ip + '.');
         // remove user from the list of connected clients
-        clients.splice(index, 1);
+        clients.delete(connection);
     });
 
     // user sent some message
