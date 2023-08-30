@@ -28,9 +28,14 @@ var server = http.createServer(function(request, response) {
         if (err) {
             d = {};
         }else{
-            var fields = data.split(";");
-            d = {song: fields[1], verse: fields[2], source: fields[3], package: fields[4], psalm: fields[5], time: fields[0], tv: tvStatus};
-            if (fields[0] == "0"){
+            try{
+                var fields = JSON.parse(data);
+                d = {song: fields.song, verse: fields.verse, source: fields.source, package: fields.package, psalm: fields.psalm, time: fields.time, tv: tvStatus};
+                if (fields.time == "0"){
+                    d = {};
+                }
+            }catch(e){
+                console.log("Error parsing: " + data);
                 d = {};
             }
         }
@@ -69,9 +74,14 @@ fs.watch(myFile, (event, filename) => {
         if (err) {
             d = {};
         }else{ 
-            var fields = data.split(";");
-            d = {song: fields[1], verse: fields[2], source: fields[3], package: fields[4], psalm: fields[5], time: fields[0], tv: tvStatus};
-            if (fields[0] == "0"){
+            try{
+                var fields = JSON.parse(data);
+                d = {song: fields.song, verse: fields.verse, source: fields.source, package: fields.package, psalm: fields.psalm, time: fields.time, tv: tvStatus};
+                if (fields.time == "0"){
+                    d = {};
+                }
+            }catch(e){
+                console.log("Error parsing: " + data);
                 d = {};
             }
         }
@@ -97,9 +107,14 @@ wsServer.on('request', function(request) {
         if (err) {
             d = {};
         }else{ 
-            var fields = data.split(";");
-            d = {song: fields[1], verse: fields[2], source: fields[3], package: fields[4], psalm: fields[5], time: fields[0], tv: tvStatus};
-            if (fields[0] == "0"){
+             try{
+                var fields = JSON.parse(data);
+                d = {song: fields.song, verse: fields.verse, source: fields.source, package: fields.package, psalm: fields.psalm, time: fields.time, tv: tvStatus};
+                if (fields.time == "0"){
+                    d = {};
+                }
+            }catch(e){
+                console.log("Error parsing: " + data);
                 d = {};
             }
         }
@@ -126,7 +141,9 @@ wsServer.on('request', function(request) {
                 } else if(json.tv === true){
                     tvStatus = json.tv;
                 }
-                fs.writeFile(myFile, `${json.time};${json.song};${json.verse};${json.source};${json.package};${json.psalm}`, 'utf8', function(err){
+                delete json['crc'];
+                delete json['tv'];
+                fs.writeFile(myFile, JSON.stringify(json), 'utf8', function(err){
                     if(err){ 
                         console.log(err);
                     }

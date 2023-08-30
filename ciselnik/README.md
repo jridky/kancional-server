@@ -8,12 +8,12 @@ s možností upevnění na stěnu, poměrem stran 4:3 či 16:9, matným displeje
 
 ## Potřebné balíčky
 
-Pro chod číselníku je zapotřebí mít nainstalovaný HTTP server a webový prohlížeč Chromium. Webový prohlížeč by měl být součásti nainstalovaného systému. Webový server byl zvolen Apache 2.
+Pro chod číselníku je zapotřebí mít nainstalovaný HTTP server, PHP a webový prohlížeč Chromium. Webový prohlížeč by měl být součásti nainstalovaného systému. Webový server byl zvolen Apache 2.
 
 Instalaci serveru provedete příkazem:
 
 ```
-sudo apt-get install apache2
+sudo apt-get install apache2 php
 ```
 
 Po jeho nainstalování upravte patřičné soubory pod složkou `/etc`, jako jsou uvedeny zde ve složce `etc` a povolte automatické spuštění HTTP serveru při startu systému:
