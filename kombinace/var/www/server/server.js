@@ -30,7 +30,7 @@ var server = http.createServer(function(request, response) {
         }else{
             try{
                 var fields = JSON.parse(data);
-                d = {song: fields.song, verse: fields.verse, source: fields.source, package: fields.package, psalm: fields.psalm, time: fields.time, tv: tvStatus};
+                d = {song: fields.song, verse: fields.verse, source: fields.source, package: fields.package, psalm: fields.psalm, verseText: fields.verseText, time: fields.time, tv: tvStatus};
                 if (fields.time == "0"){
                     d = {};
                 }
@@ -76,7 +76,7 @@ fs.watch(myFile, (event, filename) => {
         }else{ 
             try{
                 var fields = JSON.parse(data);
-                d = {song: fields.song, verse: fields.verse, source: fields.source, package: fields.package, psalm: fields.psalm, time: fields.time, tv: tvStatus};
+                d = {song: fields.song, verse: fields.verse, source: fields.source, package: fields.package, psalm: fields.psalm, verseText: fields.verseText, time: fields.time, tv: tvStatus};
                 if (fields.time == "0"){
                     d = {};
                 }
@@ -109,7 +109,7 @@ wsServer.on('request', function(request) {
         }else{ 
              try{
                 var fields = JSON.parse(data);
-                d = {song: fields.song, verse: fields.verse, source: fields.source, package: fields.package, psalm: fields.psalm, time: fields.time, tv: tvStatus};
+                d = {song: fields.song, verse: fields.verse, source: fields.source, package: fields.package, psalm: fields.psalm, verseText: fields.verseText, time: fields.time, tv: tvStatus};
                 if (fields.time == "0"){
                     d = {};
                 }

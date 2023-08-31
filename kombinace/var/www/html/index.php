@@ -58,6 +58,11 @@ img {
 #  filter: saturate(80%) brigntness(60%) contrast(60%);
 }
 
+p {
+  margin: 0px;
+  padding: 0px;
+}
+
 #zero{
   height: 100%;
   width: 0px;
@@ -133,7 +138,7 @@ function offScreen(){
 }
 
 function displayValue(answer){
-	if(answer.psalm == ""){
+	if(answer.psalm == "" && answer.verseText == ""){
 		$("#number .centered").html(answer.song);
 		if(answer.verse != "" && answer.verse != "0"){
 			$("#verse .centered").html(answer.verse+". sloka");
@@ -155,7 +160,7 @@ function displayValue(answer){
 		$("#number").show();
 		$("#psalm").hide();
 	}else{
-		$("#psalm .centered").html(answer.psalm);
+		$("#psalm .centered").html((answer.psalm != ""?answer.psalm:answer.verseText));
 		$("#number, #verse, #add").hide();
 		$("#psalm").show();
 		$("#psalm").css("font-size", "30em");
