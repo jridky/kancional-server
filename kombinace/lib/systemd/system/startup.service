@@ -2,6 +2,7 @@
 Description=Startup service
 
 [Service]
+Restart=on-failure
 ExecStart=/usr/bin/startup
 User=pi
 

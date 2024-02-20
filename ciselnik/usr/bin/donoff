@@ -3,7 +3,7 @@
 echo 1 > /var/www/html/state
 
 STATE=2
-while true;
+while inotifywait -e modify /var/www/html/state;
 do
 	while read COMMAND; 
 	do 

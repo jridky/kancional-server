@@ -27,7 +27,7 @@ V tomto repozitáři se nacházejí zdrojové kódy pro tři druhy zařízení (
 2. číselník
 3. kombinace (server s číselníkem dohromady)
 
-V každé složce naleznete pokyny specifické pro danou verzi.
+**V každé složce naleznete pokyny specifické pro danou verzi a instalační skript. Stačí si tedy jen danou složku zkopírovat na cílové zařízení a spustit v ní příkaz `sudo ./install.sh` .**
 
 Pro ovládání serveru je zapotřebí mít nainstalovanou aplikaci [Kancionál-Server](https://play.google.com/store/apps/details?id=jozkar.kancional.server), která je zdarma k dospozici pro zařízení s operačním systémem Android v obchodu Google Play.
 

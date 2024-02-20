@@ -93,7 +93,7 @@ p {
 <script>
 var screen = true, timeout = false, socket = false;
 $(function(){
-	$("#number").css("color","red");
+	$("#number").css("color","white");
 	checkSocket();
 	setInterval(checkSocket, 1800);
 });

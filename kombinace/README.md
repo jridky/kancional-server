@@ -9,12 +9,12 @@ s možností upevnění na stěnu, poměrem stran 4:3 či 16:9, matným displeje
 
 ## Potřebné balíčky
 
-Pro chod tohoto zařízení je zapotřebí mít nainstalovaný HTTP server, PHP, webový prohlížeč Chromium a balíček nodejs. Webový prohlížeč by měl být součásti nainstalovaného systému. Webový server byl zvolen Apache 2.
+Pro chod tohoto zařízení je zapotřebí mít nainstalovaný HTTP server, PHP, inotify-tools, webový prohlížeč Chromium a balíček nodejs. Webový prohlížeč by měl být součásti nainstalovaného systému. Webový server byl zvolen Apache 2.
 
 Instalaci potřebných balíčků provedete příkazem:
 
 ```
-sudo apt-get install apache2 nodejs php
+sudo apt-get install apache2 nodejs php inotify-tools
 ```
 
 Po úspěšné instalaci upravte patřičné soubory pod složkou `/etc`, jako jsou uvedeny zde ve složce `etc` a povolte automatické spuštění HTTP serveru při startu systému:
@@ -98,8 +98,7 @@ Změnu barev můžete provést úpravou kaskádových stylů v souboru `/var/www
 #### Vyskakovací okno o aktualizaci Chromia
 V systému Rasbpian se cca od verze 78 aplikace Chromium stává, že po určité době vyskočí menší okno s informací o aktualizaci aplikace Chromium. Jedná se o novou funkci, která dříve v Chromiu nebyla, ovšem má za následek překrytí okna číselníku touto hláškou.
 
-Řešením je přidání souboru, který je umístěn pod složkou `/etc/chromium-browser/customizations/` tohoto repozitáře do stejného místa na Raspberry Pi. Dále je potřeba přidat řádek do `/etc/crontab`, jako je uveden ve stejném souboru to
-    hoto repozitáře.
+Řešením je přidání souboru, který je umístěn pod složkou `/etc/chromium.d/` tohoto repozitáře do stejného místa na Raspberry Pi. Dále je potřeba přidat řádek do `/etc/crontab`, jako je uveden ve stejném souboru tohoto repozitáře.
 
 V případě problémů s fungováním zařízení můžete zkontrolovat stav služeb a chybový výstup serveru pomocí příkazů:
 

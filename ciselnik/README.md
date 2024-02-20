@@ -8,12 +8,12 @@ s možností upevnění na stěnu, poměrem stran 4:3 či 16:9, matným displeje
 
 ## Potřebné balíčky
 
-Pro chod číselníku je zapotřebí mít nainstalovaný HTTP server, PHP a webový prohlížeč Chromium. Webový prohlížeč by měl být součásti nainstalovaného systému. Webový server byl zvolen Apache 2.
+Pro chod číselníku je zapotřebí mít nainstalovaný HTTP server, PHP, inotify-tools a webový prohlížeč Chromium. Webový prohlížeč by měl být součásti nainstalovaného systému. Webový server byl zvolen Apache 2.
 
 Instalaci serveru provedete příkazem:
 
 ```
-sudo apt-get install apache2 php
+sudo apt-get install apache2 php inotify-tools
 ```
 
 Po jeho nainstalování upravte patřičné soubory pod složkou `/etc`, jako jsou uvedeny zde ve složce `etc` a povolte automatické spuštění HTTP serveru při startu systému:
@@ -72,7 +72,7 @@ Změnu barev můžete provést úpravou kaskádových stylů v souboru `/var/www
 #### Vyskakovací okno o aktualizaci Chromia
 V systému Rasbpian se cca od verze 78 aplikace Chromium stává, že po určité době vyskočí menší okno s informací o aktualizaci aplikace Chromium. Jedná se o novou funkci, která dříve v Chromiu nebyla, ovšem má za následek překrytí okna číselníku touto hláškou.
 
-Řešením je přidání souboru, který je umístěn pod složkou `/etc/chromium-browser/customizations/` tohoto repozitáře do stejného místa na Raspberry Pi. Dále je potřeba přidat řádek do `/etc/crontab`, jako je uveden ve stejném souboru tohoto repozitáře.
+Řešením je přidání souboru, který je umístěn pod složkou `/etc/chromium.d/` tohoto repozitáře do stejného místa na Raspberry Pi. Dále je potřeba přidat řádek do `/etc/crontab`, jako je uveden ve stejném souboru tohoto repozitáře.
 
 V případě problémů s fungováním číselníku můžete zkontrolovat stav služeb a chybový výstup zařízení pomocí příkazů:
 
