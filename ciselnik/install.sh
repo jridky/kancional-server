@@ -39,7 +39,7 @@ sed /etc/lightdm/lightdm.conf -i -e "s/^#\\?greeter-session.*/greeter-session=pi
 
 echo "Přepnuto na prostředí x11"
 
-Nastavení napájení
+# Nastavení napájení
 sed -i 's/#xserver-command=X/xserver-command=X -s 0 dpms/g' /etc/lightdm/lightdm.conf
 if [ -e /boot/firmware/config.txt ] ; then
     sed -i 's/^dtoverlay/#dtoverlay/g' /boot/firmware/config.txt
