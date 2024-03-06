@@ -1,8 +1,10 @@
 [Unit]
 Description=Startup service
+After=multi-user.target
 
 [Service]
 Restart=on-failure
+ExecStartPre=/usr/bin/sleep 5
 ExecStart=/usr/bin/startup
 User=pi
 

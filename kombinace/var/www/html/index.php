@@ -149,7 +149,7 @@ function displayValue(answer){
 			$("#verse").hide();
 			$("#number").css("height", "100%");
 		}
-		$("#add").hide();
+		$("#psalm, #add").hide();
 		$("#number").show();
 		$("#number").css("font-size", "50em");
 		while( $("#number").innerHeight() < $("#number").prop("scrollHeight")  || $("#number").innerWidth() < $("#number").prop("scrollWidth") ){
@@ -157,8 +157,6 @@ function displayValue(answer){
 			value = value - 10;
 			$("#number").css("font-size", value+"px");
 		}
-		$("#number").show();
-		$("#psalm").hide();
 	}else{
 		$("#psalm .centered").html((answer.psalm != ""?answer.psalm:answer.verseText));
 		$("#number, #verse, #add").hide();
