@@ -1,4 +1,4 @@
 <?php
-	shell_exec("echo 0 > state");
+	shell_exec("/usr/bin/donoff 0");
 ?>
 

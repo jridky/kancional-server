@@ -1,3 +1,3 @@
 <?php
-	shell_exec("echo 1 > state");
+	shell_exec("/usr/bin/donoff 1");
 ?>

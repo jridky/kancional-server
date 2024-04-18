@@ -6,7 +6,7 @@ if [ "$EUID" -ne 0 ]
 fi
 
 #instalace balicku
-apt-get install apache2 php inotify-tools -y || { echo "Systému se nepodařilo nainstalovat potřebné balíky. V instalaci číselníku nelze pokračovat. Tip: Zkontrolujte si připojení k internetu."; exit 1; }
+apt-get install apache2 php -y || { echo "Systému se nepodařilo nainstalovat potřebné balíky. V instalaci číselníku nelze pokračovat. Tip: Zkontrolujte si připojení k internetu."; exit 1; }
 
 #kopirovani nastaveni
 cp ./etc/apache2/ports.conf /etc/apache2/
@@ -18,8 +18,8 @@ cat ./etc/crontab >> /etc/crontab
 #instalace ciselniku
 
 cp ./lib/systemd/system/* /lib/systemd/system/
-chmod 0644 /lib/systemd/system/{donoff,startup}.service
-chown root:root /lib/systemd/system/{donoff,startup}.service
+chmod 0644 /lib/systemd/system/startup.service
+chown root:root /lib/systemd/system/startup.service
 
 cp ./usr/bin/* /usr/bin/
 chmod 0755 /usr/bin/{donoff,startup}
@@ -29,7 +29,6 @@ chown pi:pi /usr/bin/startup
 rm /var/www/html/index.html
 cp ./var/www/html/* /var/www/html/
 chmod 0644 /var/www/html/*
-chmod 0777 /var/www/html/state
 chown root:root /var/www/html/*
 
 # nastavení běhu na x11
@@ -47,8 +46,8 @@ else
     sed -i 's/^dtoverlay/#dtoverlay/g' /boot/config.txt
 fi
 
-sudo systemctl enable donoff
-sudo systemctl start donoff
+sudo usermod -aG video www-data
+
 sudo systemctl enable startup
 
 echo "Číselník nainstalován. Restartujte zařízení příkazem - reboot."

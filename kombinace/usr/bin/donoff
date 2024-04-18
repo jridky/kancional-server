@@ -1,17 +1,11 @@
 #!/bin/bash
 
-echo 1 > /var/www/html/state
+if [ $# -eq 0 ] ; then
+   echo "Not enough parameters."
+   exit 1
+fi
 
-STATE=2
-while inotifywait -e modify /var/www/html/state;
-do
-	while read COMMAND; 
-	do 
-		if [ $STATE -ne $COMMAND ]
-		then
-			vcgencmd display_power $COMMAND > /dev/null
-			STATE=$COMMAND
-		fi
-	done < /var/www/html/state
-done
+if [ "$1" -eq 0 ] || [ "$1" -eq 1 ] ; then
+    vcgencmd display_power $1 > /dev/null
+fi
 

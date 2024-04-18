@@ -9,12 +9,12 @@ s možností upevnění na stěnu, poměrem stran 4:3 či 16:9, matným displeje
 
 ## Potřebné balíčky
 
-Pro chod tohoto zařízení je zapotřebí mít nainstalovaný HTTP server, PHP, inotify-tools, webový prohlížeč Chromium a balíček nodejs. Webový prohlížeč by měl být součásti nainstalovaného systému. Webový server byl zvolen Apache 2.
+Pro chod tohoto zařízení je zapotřebí mít nainstalovaný HTTP server, PHP, webový prohlížeč Chromium a balíček nodejs. Webový prohlížeč by měl být součásti nainstalovaného systému. Webový server byl zvolen Apache 2.
 
 Instalaci potřebných balíčků provedete příkazem:
 
 ```
-sudo apt-get install apache2 nodejs php inotify-tools
+sudo apt-get install apache2 nodejs php
 ```
 
 Po úspěšné instalaci upravte patřičné soubory pod složkou `/etc`, jako jsou uvedeny zde ve složce `etc` a povolte automatické spuštění HTTP serveru při startu systému:
@@ -54,17 +54,20 @@ Pro soubory pod složkou `lib` by měl být vlastníkem uživatel a skupina **ro
 
 Pro soubory pod složkou `usr` by měl být vlastníkem uživatel a skupina **root**. Výjimkou je soubor `startup`, který má mít ve vlastnictví uživatel a skupina **pi**. Přístupová práva nastavte všem na **0755**.
 
-Pro soubory pod složkou `var` by měl být vlastníkem uživatel a skupina **root**. Důležité je však nastavit přístupová práva souboru `/var/www/html/state` na **0777**, pro zbývající soubory stačí práva **0644**.
+Pro soubory pod složkou `var` by měl být vlastníkem uživatel a skupina **root**. Pro soubory stačí práva **0644**.
+
+V terminálu spusťte následující příkaz pro zařazení uživatele do potřebné skupiny:
+```
+sudo usermod -aG video www-data
+```
 
 Pro správné fungování serveru je zapotřebí upravit soubor `/var/www/server/server.js`, ve kterém si musíte vymyslet své unikátní varhanické heslo, které bude zapotřebí zadat do mobilní aplikace Kancionál - server, abyste byli schopni na serveru cokoli nastavovat.
 
 V souboru `/var/www/server/server.js` nalezněte řádek `const passwd = "SET-YOUR-PASSWORD";` a nahraďte řetězec `SET-YOUR-PASSWORD` vámi zvoleným heslem.
 
-Po nakopírování a nastavení vlastnictví a přístupových práv je zapotřebí povolit automatické spuštění nově přidaných služeb:
+Po nakopírování a nastavení vlastnictví a přístupových práv a skupin je zapotřebí povolit automatické spuštění nově přidaných služeb:
 
 ```
-sudo systemctl enable donoff
-sudo systemctl start donoff
 sudo systemctl enable serverstart
 sudo systemctl start serverstart
 sudo systemctl enable startup
@@ -105,7 +108,6 @@ V případě problémů s fungováním zařízení můžete zkontrolovat stav sl
 ```
 systemctl status startup
 systemctl status serverstart
-systemctl status donoff
 systemctl status avahi-daemon.service
 ```
 

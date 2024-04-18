@@ -1,9 +1,0 @@
-[Unit]
-Description=Monitor on/off service
-
-[Service]
-ExecStart=/usr/bin/donoff
-User=pi
-
-[Install]
-WantedBy=multi-user.target

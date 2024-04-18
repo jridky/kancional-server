@@ -8,12 +8,12 @@ s možností upevnění na stěnu, poměrem stran 4:3 či 16:9, matným displeje
 
 ## Potřebné balíčky
 
-Pro chod číselníku je zapotřebí mít nainstalovaný HTTP server, PHP, inotify-tools a webový prohlížeč Chromium. Webový prohlížeč by měl být součásti nainstalovaného systému. Webový server byl zvolen Apache 2.
+Pro chod číselníku je zapotřebí mít nainstalovaný HTTP server, PHP a webový prohlížeč Chromium. Webový prohlížeč by měl být součásti nainstalovaného systému. Webový server byl zvolen Apache 2.
 
 Instalaci serveru provedete příkazem:
 
 ```
-sudo apt-get install apache2 php inotify-tools
+sudo apt-get install apache2 php
 ```
 
 Po jeho nainstalování upravte patřičné soubory pod složkou `/etc`, jako jsou uvedeny zde ve složce `etc` a povolte automatické spuštění HTTP serveru při startu systému:
@@ -34,13 +34,16 @@ Pro soubory pod složkou `lib` by měl být vlastníkem uživatel a skupina **ro
 
 Pro soubory pod složkou `usr` by měl být vlastníkem uživatel a skupina **root**. Výjimkou je soubor `startup`, který má mít ve vlastnictví uživatel a skupina **pi**. Přístupová práva nastavte všem na **0755**.
 
-Pro soubory pod složkou `var` by měl být vlastníkem uživatel a skupina **root**. Důležité je však nastavit přístupová práva souboru `/var/www/html/state` na **0777**, pro zbývající soubory stačí práva **0644**.
+Pro soubory pod složkou `var` by měl být vlastníkem uživatel a skupina **root**. Pro soubory stačí práva **0644**.
 
-Po nakopírování a nastavení vlastnictví a přístupových práv je zapotřebí povolit automatické spuštění nově přidaných služeb:
+V terminálu spusťte následující příkaz pro zařazení uživatele do potřebné skupiny:
+```
+sudo usermod -aG video www-data
+```
+
+Po nakopírování a nastavení vlastnictví a přístupových práv a skupin je zapotřebí povolit automatické spuštění nově přidaných služeb:
 
 ```
-sudo systemctl enable donoff
-sudo systemctl start donoff
 sudo systemctl enable startup
 ```
 Po spuštění služby `startup` se spustí webový prohlížeč v režimu celé obrazovky. Pokud budete ještě potřebovat pracovat se systémem, stiskněte klávesu F11.
@@ -78,7 +81,6 @@ V případě problémů s fungováním číselníku můžete zkontrolovat stav s
 
 ```
 systemctl status startup
-systemctl status donoff
 ```
 
 V případě přetrvávajících problémů mě kontaktujte na emailu [J.Ridky@gmail.com](mailto:J:Ridky@gmail.com).
