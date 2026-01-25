@@ -1,12 +1,12 @@
 # Kancionál - server
 
 V následujícím repozitáři naleznete zdrojové kódy pro Kancionál server,
-který je zapotřebí mít k dispozici v každém kostele, kde chcete mít dostupné centrální nastavování skladeb všem připojeným účastníkům bohoslužeb.
+který je zapotřebí mít k dispozici v každém kostele, kde chcete mít dostupné centrální nastavování skladeb všem připojeným účastníkům bohoslužeb nebo i jen pro ovládání číselníků.
 
 ## Prerekvizity
 
-V první řadě je zapotřebí mít v kostele vytvořenou veřejnou Wi-Fi síť, na kterou se budou moci návštěvníci se svými zařízeními připojit.
-Z praktických důvodů nedoporučuji, aby daná síť měla přístup na internet.
+V první řadě je zapotřebí mít v kostele vytvořenou veřejnou Wi-Fi síť, na kterou se budou moci varhanící a případně i návštěvníci se svými zařízeními připojit.
+Pokud by se mělo jednat o síť přístupnou široké veřejnosti, tak z praktických důvodů nedoporučuji, aby daná síť měla přístup na internet. Pokud by však šlo o zaheslovanou síť jen pro varhaníky, je lepší mít na ní přístup k internetu. Ne proto, že by jej aplikace vyžadovala, ale protože mají mobilní zařízení problém s připojováním k sítím, které nemají přístup na internet.
 
 Při vytváření Wi-Fi sítě mějte na paměti, že je jejím signálem zapotřebí pokrýt oblast celého kostela, nebo jen té části, kde se vyskytují účastníci bohoslužeb.
 Druhým podstatným parametrem při vytváření Wi-Fi sítě je počet zařízení, která by se měla být schopná současně k síti připojit a komunikovat.
@@ -16,7 +16,7 @@ V tomto bodě osobně doporučuji zařízení **Ubiquiti od společnosti UniFi**
 
 
 ## Server
-Za server je považováno zařízení Raspberry Pi, na kterém je nainstalovaný operační systém Raspbian a které je připojené k lokální síti v kostele a má **aktivní službu mDNS prostřednictvím programu avahi.**
+Za server je považováno zařízení Raspberry Pi, na kterém je nainstalovaný operační systém Raspbian **(doporučuji Legacy Full verzi systému - Bullseye či Bookworm)** v a které je připojené k lokální síti v kostele a má **aktivní službu mDNS prostřednictvím programu avahi.**
 
 ## Zdrojové kódy
 Soubory v jednotlivých složkách korespondují s adresářovou strukturou tohoto operačního systému. Pro správnou funkci je zapotřebí mít na systému nainstalované
