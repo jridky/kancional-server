@@ -141,7 +141,11 @@ function displayValue(answer){
 	if(answer.psalm == "" && (answer.verseText == undefined || answer.verseText == "")){
 		$("#number .centered").html(answer.song);
 		if(answer.verse != "" && answer.verse != "0"){
-			$("#verse .centered").html(answer.verse+". sloka");
+			if(isFinite(answer.verse)){
+                    $("#verse .centered").html(answer.verse+". sloka");
+            } else {
+                    $("#verse .centered").html(answer.verse);
+            }
 			$("#number").css("height", "50%");
 			$("#verse").show();
 		}else{
