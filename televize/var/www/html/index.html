@@ -25,8 +25,17 @@ html, body{
    background: black;
 }
 
+.radius{
+   border-bottom-left-radius: 15px;
+   border-bottom-right-radius: 15px;
+}
+
 #verse{
-   top: 12%;
+   top: 14%;
+   width: 20%;
+   line-height: 1.5em;
+   height: 5%;
+   padding-bottom: 3%;
 }
 
 #psalm {
@@ -34,12 +43,12 @@ html, body{
     bottom: 0px;
     padding: 0px;
     margin: 0px;
-    background: black;
+    background: rgba(0,0,0,0.8);
     width: 100%;
 }
 
-#number, #verse{
-   height: 15%;
+#number{
+   height: 14%;
    width: 20%;
    line-height: 1.5em;
 }
@@ -69,10 +78,9 @@ html, body{
 }
 
 #psalm.solo{
-  top: 10%;
-  height: 75%;
+   top:10%;
+   height: 75%;
 }
-
 </style>
 </head>
 <body>
@@ -80,7 +88,7 @@ html, body{
 <div id="number">
 <div class="centered"></div>
 </div>
-<div id="verse">
+<div id="verse" class="radius">
  <div class="centered">
  </div>
 </div>
@@ -94,19 +102,20 @@ html, body{
 var timeout, socket = false;
 $(function(){
 	$("#number").css("color","white");
-	var video = document.querySelector("#video");
+    $("#psalm, #verse, #number").hide();
+    var video = document.querySelector("#video");
 
-	if (navigator.mediaDevices.getUserMedia) {
-		navigator.mediaDevices.getUserMedia({ video: true })
-		    .then(function (stream) {
-			video.srcObject = stream;
-		    })
-		    .catch(function (error) {
-			  console.log("Something went wrong!");
-    		});
-	}
-	checkSocket();
-	setInterval(checkSocket, 1800);
+    checkSocket();
+    setInterval(checkSocket, 1800);
+    if (navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function (stream) {
+                    video.srcObject = stream;
+                })
+                .catch(function (error) {
+                      console.log("Something went wrong!");
+            });
+    }
 });
 
 function checkSocket(){
@@ -150,21 +159,27 @@ function displayValue(answer){
     }
 
 	if(answer.psalm == ""){
-		if(answer.song == ""){
-			$("#number, #verse").hide();
-		} else {
-			$("#number .centered").html(answer.song);
-			if(answer.verse != "" && answer.verse != "0"){
-				$("#verse .centered").html(answer.verse+". sloka");
-				$("#verse").show();
-			}else{
-				$("#verse .centered").html("");
-				$("#verse").hide();
-			}
-			$("#number").show();
-		}
-		$("#psalm").hide();
-	}else{
+        if(answer.song == ""){
+            $("#number, #verse").hide();
+        } else {
+            $("#number .centered").html(answer.song);
+            if(answer.verse != "" && answer.verse != "0"){
+                if(isFinite(answer.verse)){
+                    $("#verse .centered").html(answer.verse+". sloka");
+                } else {
+                    $("#verse .centered").html(answer.verse);
+                }
+                $("#verse").show();
+                $("#number").removeClass("radius");
+            }else{
+                $("#verse .centered").html("");
+                $("#verse").hide();
+                $("#number").addClass("radius");
+            }
+            $("#number").show();
+        }
+        $("#psalm").hide();
+    }else{
 		$("#psalm .centered").html(answer.psalm);
 		$("#number, #verse").hide();
 		$("#psalm").show();
@@ -177,9 +192,7 @@ function displayValue(answer){
 	}
 
 	if(jQuery.isEmptyObject(answer)){
-		$("#psalm, #verse, #number").hide();
-		clearTimeout(timeout);
-		timeout = false;
+		offScreen();
 	}
 }
 </script>

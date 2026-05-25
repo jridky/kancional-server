@@ -31,6 +31,25 @@ V tomto repozitáři se nacházejí zdrojové kódy pro tři druhy zařízení (
 
 Pro ovládání serveru je zapotřebí mít nainstalovanou aplikaci [Kancionál-Server](https://play.google.com/store/apps/details?id=jozkar.kancional.server), která je zdarma k dospozici pro zařízení s operačním systémem Android v obchodu Google Play.
 
+# Přídání podpory pro zobrazování liturgických názvů u ordinárií
+
+Přihlaste se na číselník pomocí ssh, otevřete si se `sudo` příkazem soubor `/var/www/html/index.php` nebo `/var/www/html/index.html` a upravte řádek, který obsahuje
+
+```js
+$("#verse .centered").html(answer.verse+". sloka");
+```
+
+za následující kód
+```js
+if(isFinite(answer.verse)){
+   $("#verse .centered").html(answer.verse+". sloka");
+} else {
+   $("#verse .centered").html(answer.verse);
+}
+``` 
+
+a restartujte službu nebo celé zařízení.
+
 # Copyright
 
 Autorem zdrojového kódu i mobilní aplikace je Josef Řídký.
