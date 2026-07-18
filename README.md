@@ -16,20 +16,26 @@ V tomto bodě osobně doporučuji zařízení **Ubiquiti od společnosti UniFi**
 
 
 ## Server
-Za server je považováno zařízení Raspberry Pi, na kterém je nainstalovaný operační systém Raspbian **(doporučuji Legacy Full verzi systému - Bullseye či Bookworm)** v a které je připojené k lokální síti v kostele a má **aktivní službu mDNS prostřednictvím programu avahi.**
+Za server je považováno zařízení Raspberry Pi, na kterém je nainstalovaný operační systém Raspberry Pi OS **(doporučuji poslední Legacy Full verzi systému)** a které je připojené k lokální síti v kostele a má **aktivní službu mDNS prostřednictvím programu avahi.**
+
+Podporovány jsou systémy Bullseye, Bookworm i Trixie.
 
 ## Zdrojové kódy
 Soubory v jednotlivých složkách korespondují s adresářovou strukturou tohoto operačního systému. Pro správnou funkci je zapotřebí mít na systému nainstalované
 potřebné balíky v závislosti na verzi zařízení, které vytváříte.
 
-V tomto repozitáři se nacházejí zdrojové kódy pro tři druhy zařízení (každý druh ve vlastní složce):
-1. server
-2. číselník
-3. kombinace (server s číselníkem dohromady)
+V tomto repozitáři se nacházejí zdrojové kódy pro následující druhy zařízení (každý druh ve vlastní složce):
+1. **server** -- samostatný server bez displeje
+2. **ciselnik** -- samostatný číselník (vyžaduje server v síti)
+3. **kombinace** -- server s číselníkem dohromady na jednom zařízení
+4. **ciselnik-dual-screen** -- samostatný číselník na dvou monitorech/televizích současně (vyžaduje server v síti, experimentální)
+5. **kombinace-dual-screen** -- server s číselníkem na dvou monitorech/televizích současně (experimentální)
 
 **V každé složce naleznete pokyny specifické pro danou verzi a instalační skript. Stačí si tedy jen danou složku zkopírovat na cílové zařízení a spustit v ní příkaz `sudo ./install.sh` .**
 
-Pro ovládání serveru je zapotřebí mít nainstalovanou aplikaci [Kancionál-Server](https://play.google.com/store/apps/details?id=jozkar.kancional.server), která je zdarma k dospozici pro zařízení s operačním systémem Android v obchodu Google Play.
+Během instalace se skript zeptá, zda bude k zařízení připojena televize nebo monitor. Při volbě televize se nainstaluje podpora pro HDMI-CEC, která umožňuje automatické zapínání a vypínání televize. CEC je nutné povolit v nastavení televize (Samsung: Anynet+, LG: SimpLink, Sony: Bravia Sync, Philips: EasyLink apod.).
+
+Pro ovládání serveru je zapotřebí mít nainstalovanou aplikaci [Kancionál-Server](https://play.google.com/store/apps/details?id=jozkar.kancional.server), která je zdarma k dispozici pro zařízení s operačním systémem Android v obchodu Google Play.
 
 # Přídání podpory pro zobrazování liturgických názvů u ordinárií
 

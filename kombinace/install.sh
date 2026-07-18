@@ -102,7 +102,7 @@ sudo usermod -aG video www-data
 
 # Na Bookworm+ povolit www-data spouštět wlopm jako pi (pro ovládání displeje z PHP)
 if [ "$IS_BOOKWORM_PLUS" = true ] ; then
-    echo "www-data ALL=(pi) NOPASSWD: /usr/bin/wlopm, /usr/bin/env" > /etc/sudoers.d/donoff
+    echo "www-data ALL=(pi) NOPASSWD: /usr/bin/wlopm, /usr/bin/env, /usr/bin/find" > /etc/sudoers.d/donoff
     chmod 0440 /etc/sudoers.d/donoff
 fi
 

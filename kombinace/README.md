@@ -1,109 +1,56 @@
 # Kombinace číselníku a serveru
 
-Následující složka obsahuje verzi kódu pro zařízení, které má zastávat dvojí úlohu: má být serverem i číselníkem zároveň.
+Následující složka obsahuje verzi kódu pro zařízení, které má zastávat dvojí úlohu: má být serverem i číselníkem zároveň. Jedná se o Raspberry Pi s operačním systémem Raspberry Pi OS (Bullseye, Bookworm i Trixie), ke kterému je pomocí HDMI kabelu připojen monitor nebo televize.
 
-Pro toto zařízení platí, že se jedná o Raspberry Pi ke kterému je pomocí HDMI kabelu připojen prakticky libovolný monitor.
+Při výběru monitoru doporučuji dát přednost takovým, které jsou lehčí, bez velkého rámečku či příliš rušivých ovládacích tlačítek, s možností upevnění na stěnu, poměrem stran 4:3 či 16:9, matným displejem a vyšší svítivostí.
 
-Při výběru monitoru doporučuji dát přednost takovým, které jsou lehčí, bez velkého rámečku či příliš rušivých ovládacích tlačítek,
-s možností upevnění na stěnu, poměrem stran 4:3 či 16:9, matným displejem a vyšší svítivostí.
+## Instalace
 
-## Potřebné balíčky
-
-Pro chod tohoto zařízení je zapotřebí mít nainstalovaný HTTP server, PHP, webový prohlížeč Chromium a balíček nodejs. Webový prohlížeč by měl být součásti nainstalovaného systému. Webový server byl zvolen Apache 2.
-
-Instalaci potřebných balíčků provedete příkazem:
+Zkopírujte tuto složku na cílové Raspberry Pi a spusťte instalační skript:
 
 ```
-sudo apt-get install apache2 nodejs php
+sudo ./install.sh
 ```
 
-Po úspěšné instalaci upravte patřičné soubory pod složkou `/etc`, jako jsou uvedeny zde ve složce `etc` a povolte automatické spuštění HTTP serveru při startu systému:
+Skript automaticky:
+- nainstaluje potřebné balíčky (Apache, PHP, Node.js a další dle verze OS)
+- nakopíruje a nastaví všechny potřebné soubory a služby
+- nakonfiguruje službu mDNS (avahi) pro dostupnost zařízení jako `kancional.local`
+- na Bookworm+ nastaví Wayland prostředí (wlopm, labwc, skrytí kurzoru)
+- na starších systémech nastaví X11 prostředí
 
-```
-sudo systemctl enable apache2
-```
+Během instalace se skript zeptá, zda bude připojeno zobrazovací zařízení typu televize nebo monitor. Při volbě televize se nainstaluje podpora pro HDMI-CEC, která umožňuje automatické zapínání a vypínání televize.
 
-Dále je zapotřebí nastavit službu mDNS, kterou zajišťuje služba `avahi`. Tato služba by již měla být na vašem Raspberry Pi automaticky nainstalovaná, povolená a spuštěná. Toto můžete ověřit příkazem:
+V popisu se předpokládá, že při instalaci systému byl jako název uživatele zvolen řetězec **pi**.
 
-```
-systemctl status avahi-daemon.service
-```
-kde byste měli vidět danou službu povolenou (enabled) a spuštěnou (running).
+Po dokončení instalace je zapotřebí upravit soubor `/var/www/server/server.js`, ve kterém si musíte vymyslet své unikátní varhanické heslo. V souboru nalezněte řádek `const passwd = "SET-YOUR-PASSWORD";` a nahraďte řetězec `SET-YOUR-PASSWORD` vámi zvoleným heslem.
 
-První část nastavení této služby jste provedli nakopírováním souborů do složky `etc`.
-Pro druhou část je zapotřebí upravit soubor `/etc/avahi/avahi-daemon.conf`.
+Na závěr restartujte zařízení.
 
-V tomto souboru upravte jediný řádek:
-```
-#host-name=foo
-```
-opravte na
-```
-host-name=kancional
-```
+## Podporované systémy
 
-V popisu předpokládám, že při instalaci systému byl jako název pro uživatele zvolen řetězec **pi**.
+- **Raspberry Pi OS Bullseye a starší** -- X11, vcgencmd/xset dpms pro ovládání displeje
+- **Raspberry Pi OS Bookworm** -- Wayland (labwc) i X11, wlopm/xset dpms pro ovládání displeje
+- **Raspberry Pi OS Trixie** -- Wayland (labwc) i X11, wlopm/xset dpms pro ovládání displeje
 
-## Instalace číselníku a serveru
+## HDMI-CEC
 
-Pro instalaci je zapotřebí nakopírovat všechny soubory ze zbývajících zde uvedených složek do adresářů na zařízení.
-
-Nakopírovaným souborům je zapotřebí nastavit správně vlastníka i přístupová práva.
-
-Pro soubory pod složkou `lib` by měl být vlastníkem uživatel a skupina **root**. Přístupová práva nastavte na **0644**.
-
-Pro soubory pod složkou `usr` by měl být vlastníkem uživatel a skupina **root**. Výjimkou je soubor `startup`, který má mít ve vlastnictví uživatel a skupina **pi**. Přístupová práva nastavte všem na **0755**.
-
-Pro soubory pod složkou `var` by měl být vlastníkem uživatel a skupina **root**. Pro soubory stačí práva **0644**.
-
-V terminálu spusťte následující příkaz pro zařazení uživatele do potřebné skupiny:
-```
-sudo usermod -aG video www-data
-```
-
-Pro správné fungování serveru je zapotřebí upravit soubor `/var/www/server/server.js`, ve kterém si musíte vymyslet své unikátní varhanické heslo, které bude zapotřebí zadat do mobilní aplikace Kancionál - server, abyste byli schopni na serveru cokoli nastavovat.
-
-V souboru `/var/www/server/server.js` nalezněte řádek `const passwd = "SET-YOUR-PASSWORD";` a nahraďte řetězec `SET-YOUR-PASSWORD` vámi zvoleným heslem.
-
-Po nakopírování a nastavení vlastnictví a přístupových práv a skupin je zapotřebí povolit automatické spuštění nově přidaných služeb:
-
-```
-sudo systemctl enable serverstart
-sudo systemctl start serverstart
-sudo systemctl enable startup
-```
-Po spuštění služby `startup` se spustí webový prohlížeč v režimu celé obrazovky. Pokud budete ještě potřebovat pracovat se systémem, stiskněte klávesu F11.
-Spuštění služby `startup` provedete příkazem:
-
-```
-sudo systemctl start startup
-```
-
-Dále je zapotřebí upravit nastavení systému takovým způsobem, aby nedocházelo k automatickému vypínání obrazovky a přechodu do režimu spánku.
-
-Otevřete si soubor `/etc/lightdm/lightdm.conf` jako root (pomocí sudo) a do části označené `[Seat*]` vložte následující řádek:
-
-```
-xserver-command=X -s 0 dpms
-```
-
-Jako poslední se ujistěte, že je zařízení připojené k Wi-Fi síti (není-li zařízení připojeno Ethernet kabelem) v kostele a že se k této síti dokáže po startu samo připojit.
-
-Na závěr restartujte celé zařízení.
+Pokud je k Raspberry Pi připojena televize s podporou HDMI-CEC, číselník dokáže televizi automaticky zapínat a vypínat. CEC je nutné povolit v nastavení televize (Samsung: Anynet+, LG: SimpLink, Sony: Bravia Sync, Philips: EasyLink apod.).
 
 ## Úprava zobrazení
-Ve výchozím nastavení jsou čísla písní zobrazována červeně na černém pozadí. Pro čísla slok a žalmové odpovědi je použita bílá barva.
+
+Ve výchozím nastavení jsou čísla písní zobrazována bíle na černém pozadí.
 
 Změnu barev můžete provést úpravou kaskádových stylů v souboru `/var/www/html/index.php`.
 
 ## Řešení problémů
 
 #### Vyskakovací okno o aktualizaci Chromia
-V systému Rasbpian se cca od verze 78 aplikace Chromium stává, že po určité době vyskočí menší okno s informací o aktualizaci aplikace Chromium. Jedná se o novou funkci, která dříve v Chromiu nebyla, ovšem má za následek překrytí okna číselníku touto hláškou.
+V systému Raspberry Pi OS se cca od verze 78 aplikace Chromium stává, že po určité době vyskočí menší okno s informací o aktualizaci aplikace Chromium. Jedná se o novou funkci, která dříve v Chromiu nebyla, ovšem má za následek překrytí okna číselníku touto hláškou.
 
 Řešením je přidání souboru, který je umístěn pod složkou `/etc/chromium.d/` tohoto repozitáře do stejného místa na Raspberry Pi. Dále je potřeba přidat řádek do `/etc/crontab`, jako je uveden ve stejném souboru tohoto repozitáře.
 
-V případě problémů s fungováním zařízení můžete zkontrolovat stav služeb a chybový výstup serveru pomocí příkazů:
+V případě problémů s fungováním zařízení můžete zkontrolovat stav služeb:
 
 ```
 systemctl status startup
@@ -111,4 +58,4 @@ systemctl status serverstart
 systemctl status avahi-daemon.service
 ```
 
-V případě přetrvávajících problémů mě kontaktujte na emailu [J.Ridky@gmail.com](mailto:J:Ridky@gmail.com).
+V případě přetrvávajících problémů mě kontaktujte na emailu [J.Ridky@gmail.com](mailto:J.Ridky@gmail.com).
