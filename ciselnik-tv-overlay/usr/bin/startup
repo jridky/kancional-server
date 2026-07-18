@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if command -v chromium >/dev/null 2>&1 ; then
+    BROWSER=chromium
+else
+    BROWSER=chromium-browser
+fi
+
+DISPLAY=:0 $BROWSER --start-fullscreen --display=:0 --flag-switches-begin --app=http://localhost

@@ -30,6 +30,7 @@ V tomto repozitáři se nacházejí zdrojové kódy pro následující druhy za�
 3. **kombinace** -- server s číselníkem dohromady na jednom zařízení
 4. **ciselnik-dual-screen** -- samostatný číselník na dvou monitorech/televizích současně (vyžaduje server v síti, experimentální)
 5. **kombinace-dual-screen** -- server s číselníkem na dvou monitorech/televizích současně (experimentální)
+6. **ciselnik-tv-overlay** -- overlay čísla písně přes živý obraz z kamery pro televizní obrazovky
 
 **V každé složce naleznete pokyny specifické pro danou verzi a instalační skript. Stačí si tedy jen danou složku zkopírovat na cílové zařízení a spustit v ní příkaz `sudo ./install.sh` .**
 
