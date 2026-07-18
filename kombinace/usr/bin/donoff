@@ -6,6 +6,68 @@ if [ $# -eq 0 ] ; then
 fi
 
 if [ "$1" -eq 0 ] || [ "$1" -eq 1 ] ; then
-    vcgencmd display_power $1 > /dev/null
-fi
+    . /etc/os-release
 
+    # Zapínání: nejdřív CEC zapne TV, pak HDMI výstup
+    if [ "$1" -eq 1 ] ; then
+        for CEC_DEV in /dev/cec* ; do
+            if [ -e "$CEC_DEV" ] ; then
+                PHYS_ADDR=$(cec-ctl -d "$CEC_DEV" 2>/dev/null | grep 'Physical Address' | head -1 | awk '{print $NF}')
+                [ -n "$PHYS_ADDR" ] && [ "$PHYS_ADDR" != "f.f.f.f" ] && \
+                    cec-ctl -d "$CEC_DEV" --playback --active-source phys-addr="$PHYS_ADDR" --to 0 --image-view-on 2>/dev/null
+            fi
+        done
+        sleep 5
+    fi
+
+    case "$VERSION_CODENAME" in
+        jessie|stretch|buster|bullseye)
+            if [ -e /dev/cec0 ] ; then
+                export DISPLAY=:0
+                if [ "$1" -eq 0 ] ; then
+                    xset dpms force off
+                else
+                    xset dpms force on
+                fi
+            else
+                vcgencmd display_power $1 > /dev/null
+            fi
+            ;;
+        *)
+            WAYLAND_SOCKET=$(sudo -u pi /usr/bin/find /run/user/1000 -maxdepth 1 -name 'wayland-[0-9]' 2>/dev/null | head -1)
+            if [ -n "$WAYLAND_SOCKET" ] ; then
+                WL_DISPLAY=$(basename "$WAYLAND_SOCKET")
+                HDMI_OUTPUTS=$(sudo -u pi /usr/bin/env WAYLAND_DISPLAY=$WL_DISPLAY XDG_RUNTIME_DIR=/run/user/1000 /usr/bin/wlopm 2>/dev/null | grep '^HDMI' | awk '{print $1}')
+                if [ -z "$HDMI_OUTPUTS" ] ; then
+                    echo "No HDMI output detected."
+                    exit 1
+                fi
+                for OUTPUT in $HDMI_OUTPUTS ; do
+                    if [ "$1" -eq 0 ] ; then
+                        sudo -u pi /usr/bin/env WAYLAND_DISPLAY=$WL_DISPLAY XDG_RUNTIME_DIR=/run/user/1000 /usr/bin/wlopm --off "$OUTPUT"
+                    else
+                        sudo -u pi /usr/bin/env WAYLAND_DISPLAY=$WL_DISPLAY XDG_RUNTIME_DIR=/run/user/1000 /usr/bin/wlopm --on "$OUTPUT"
+                    fi
+                done
+            else
+                export DISPLAY=:0
+                if [ "$1" -eq 0 ] ; then
+                    xset dpms force off
+                else
+                    xset dpms force on
+                fi
+            fi
+            ;;
+    esac
+
+    # Vypínání: nejdřív HDMI výstup, pak CEC vypne TV
+    if [ "$1" -eq 0 ] ; then
+        for CEC_DEV in /dev/cec* ; do
+            if [ -e "$CEC_DEV" ] ; then
+                PHYS_ADDR=$(cec-ctl -d "$CEC_DEV" 2>/dev/null | grep 'Physical Address' | head -1 | awk '{print $NF}')
+                [ -n "$PHYS_ADDR" ] && [ "$PHYS_ADDR" != "f.f.f.f" ] && \
+                    cec-ctl -d "$CEC_DEV" --playback --active-source phys-addr="$PHYS_ADDR" --to 0 --standby 2>/dev/null
+            fi
+        done
+    fi
+fi

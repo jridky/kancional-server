@@ -1,3 +1,25 @@
 #!/bin/bash
 
-DISPLAY=:0 chromium-browser --start-fullscreen --display=:0 --flag-switches-begin --disable-session-crashed-bubble --disable-infobars  --app=http://localhost
+. /etc/os-release
+case "$VERSION_CODENAME" in
+    jessie|stretch|buster|bullseye)
+        if [ -e /dev/cec0 ] ; then
+            DISPLAY=:0 xhost +SI:localuser:www-data
+        fi
+        ;;
+    *)
+        if ! ls /run/user/1000/wayland-[0-9] >/dev/null 2>&1 ; then
+            DISPLAY=:0 xhost +SI:localuser:www-data
+        fi
+        ;;
+esac
+
+(sleep 2 && for WL in wayland-0 wayland-1 ; do WAYLAND_DISPLAY=$WL XDG_RUNTIME_DIR=/run/user/1000 wtype -M alt -M logo h -m alt -m logo 2>/dev/null && break ; done) &
+
+if command -v chromium >/dev/null 2>&1 ; then
+    BROWSER=chromium
+else
+    BROWSER=chromium-browser
+fi
+
+DISPLAY=:0 $BROWSER --start-fullscreen --display=:0 --flag-switches-begin --disable-session-crashed-bubble --disable-infobars  --app=http://localhost
