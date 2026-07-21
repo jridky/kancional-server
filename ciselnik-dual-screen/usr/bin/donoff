@@ -8,16 +8,19 @@ fi
 if [ "$1" -eq 0 ] || [ "$1" -eq 1 ] ; then
     . /etc/os-release
 
-    # Zapínání: nejdřív CEC zapne TV, pak HDMI výstup
+    # Zapínání: nejdřív CEC zapne TV, pak přepne vstup
     if [ "$1" -eq 1 ] ; then
         for CEC_DEV in /dev/cec* ; do
             if [ -e "$CEC_DEV" ] ; then
                 PHYS_ADDR=$(cec-ctl -d "$CEC_DEV" 2>/dev/null | grep 'Physical Address' | head -1 | awk '{print $NF}')
-                [ -n "$PHYS_ADDR" ] && [ "$PHYS_ADDR" != "f.f.f.f" ] && \
-                    cec-ctl -d "$CEC_DEV" --playback --active-source phys-addr="$PHYS_ADDR" --to 0 --image-view-on 2>/dev/null
+                if [ -n "$PHYS_ADDR" ] && [ "$PHYS_ADDR" != "f.f.f.f" ] ; then
+                    cec-ctl -d "$CEC_DEV" --playback --to 0 --image-view-on 2>/dev/null
+                    sleep 3
+                    cec-ctl -d "$CEC_DEV" --playback --active-source phys-addr="$PHYS_ADDR" 2>/dev/null
+                fi
             fi
         done
-        sleep 5
+        sleep 2
     fi
 
     case "$VERSION_CODENAME" in
