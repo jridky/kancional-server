@@ -59,6 +59,23 @@ if [ "$1" -eq 0 ] || [ "$1" -eq 1 ] ; then
             ;;
     esac
 
+    # Zapínání: po zapnutí HDMI výstupu přepnout vstup na TV
+    if [ "$1" -eq 1 ] ; then
+        for CEC_DEV in /dev/cec* ; do
+            if [ -e "$CEC_DEV" ] ; then
+                PHYS_ADDR=$(cec-ctl -d "$CEC_DEV" 2>/dev/null | grep 'Physical Address' | head -1 | awk '{print $NF}')
+                if [ -n "$PHYS_ADDR" ] && [ "$PHYS_ADDR" != "f.f.f.f" ] ; then
+                    for ATTEMPT in 1 2 3 ; do
+                        sleep 3
+                        cec-ctl -d "$CEC_DEV" --playback --active-source phys-addr="$PHYS_ADDR" 2>/dev/null
+                        ACTIVE=$(cec-ctl -d "$CEC_DEV" --to 0 --give-device-power-status 2>/dev/null | grep 'pwr-state' | awk '{print $2}')
+                        [ "$ACTIVE" = "on" ] && break
+                    done
+                fi
+            fi
+        done
+    fi
+
     # Vypínání: nejdřív HDMI výstup, pak CEC vypne TV
     if [ "$1" -eq 0 ] ; then
         for CEC_DEV in /dev/cec* ; do

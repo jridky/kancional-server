@@ -50,8 +50,9 @@ case "$VERSION_CODENAME" in
             HDMI1=$(echo "$OUTPUTS" | sed -n '1p')
             HDMI2=$(echo "$OUTPUTS" | sed -n '2p')
 
-            RES1=$(wlr-randr 2>/dev/null | grep -A2 "^$HDMI1" | grep 'current' | awk '{print $1}')
-            RES2=$(wlr-randr 2>/dev/null | grep -A2 "^$HDMI2" | grep 'current' | awk '{print $1}')
+            WLR_OUTPUT=$(wlr-randr 2>/dev/null)
+            RES1=$(echo "$WLR_OUTPUT" | sed -n "/^$HDMI1/,/^[^ ]/p" | grep 'current' | head -1 | awk '{print $1}')
+            RES2=$(echo "$WLR_OUTPUT" | sed -n "/^$HDMI2/,/^[^ ]/p" | grep 'current' | head -1 | awk '{print $1}')
 
             W1=$(echo "$RES1" | cut -dx -f1)
             H1=$(echo "$RES1" | cut -dx -f2)
