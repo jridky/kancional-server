@@ -5,8 +5,15 @@ process.title = 'kancional-ws';
 
 // Global constants
 const fs = require('fs');
+const path = require('path');
 const passwd = "SET-YOUR-PASSWORD";
 const md5 = require('md5');
+
+const imagesDir = "/var/www/html/images";
+const imageFile = path.join(imagesDir, "obrazek.webp");
+if (!fs.existsSync(imagesDir)) {
+    fs.mkdirSync(imagesDir);
+}
 
 // Port where we'll run the websocket server
 var webSocketsServerPort = 2020;
@@ -23,6 +30,33 @@ var tvStatus = true;
  * HTTP server
  */
 var server = http.createServer(function(request, response) {
+
+    if (request.method === 'POST' && request.url === '/upload') {
+        var chunks = [];
+        request.on('data', function(chunk) { chunks.push(chunk); });
+        request.on('end', function() {
+            var body = Buffer.concat(chunks);
+            fs.writeFile(imageFile, body, function(err) {
+                response.writeHead(200, {'Content-Type': 'text/plain'});
+                response.end(err ? 'err' : 'ok');
+            });
+        });
+        return;
+    }
+
+    if (request.method === 'GET' && request.url.startsWith('/images/obrazek.webp')) {
+        fs.readFile(imageFile, function(err, data) {
+            if (err) {
+                response.writeHead(404);
+                response.end('Not found');
+                return;
+            }
+            response.writeHead(200, {'Content-Type': 'image/webp'});
+            response.end(data);
+        });
+        return;
+    }
+
     fs.readFile(myFile, 'utf8', function (err, data){
         var d;
         if (err) {
