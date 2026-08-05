@@ -31,19 +31,6 @@ var tvStatus = true;
  */
 var server = http.createServer(function(request, response) {
 
-    if (request.method === 'POST' && request.url === '/upload') {
-        var chunks = [];
-        request.on('data', function(chunk) { chunks.push(chunk); });
-        request.on('end', function() {
-            var body = Buffer.concat(chunks);
-            fs.writeFile(imageFile, body, function(err) {
-                response.writeHead(200, {'Content-Type': 'text/plain'});
-                response.end(err ? 'err' : 'ok');
-            });
-        });
-        return;
-    }
-
     if (request.method === 'GET' && request.url.startsWith('/images/obrazek.webp')) {
         fs.readFile(imageFile, function(err, data) {
             if (err) {
@@ -89,10 +76,9 @@ server.listen(webSocketsServerPort, function() {
  * WebSocket server
  */
 var wsServer = new webSocketServer({
-    // WebSocket server is tied to a HTTP server. WebSocket
-    // request is just an enhanced HTTP request. For more info
-    // http://tools.ietf.org/html/rfc6455#page-6
-    httpServer: server
+    httpServer: server,
+    maxReceivedFrameSize: 10 * 1024 * 1024,
+    maxReceivedMessageSize: 10 * 1024 * 1024
 });
 
 const myFile = "/var/www/server/number";
@@ -107,7 +93,7 @@ fs.watch(myFile, (event, filename) => {
         var d;
         if (err) {
             d = {};
-        }else{ 
+        }else{
             try{
                 var fields = JSON.parse(data);
                 d = {song: fields.song, verse: fields.verse, source: fields.source, package: fields.package, psalm: fields.psalm, verseText: fields.verseText, time: fields.time, tv: tvStatus};
@@ -140,7 +126,7 @@ wsServer.on('request', function(request) {
         var d;
         if (err) {
             d = {};
-        }else{ 
+        }else{
              try{
                 var fields = JSON.parse(data);
                 d = {song: fields.song, verse: fields.verse, source: fields.source, package: fields.package, psalm: fields.psalm, verseText: fields.verseText, time: fields.time, tv: tvStatus};
@@ -165,6 +151,12 @@ wsServer.on('request', function(request) {
 
     // user sent some message
     connection.on('message', function(message) {
+        if (message.type === 'binary') {
+            fs.writeFile(imageFile, message.binaryData, function(err) {
+                connection.sendUTF(err ? 'img_err' : 'img_ok');
+            });
+            return;
+        }
         if (message.type === 'utf8') { // accept only text
             // first message sent by user is their name
             var json = JSON.parse(message.utf8Data)
