@@ -30,6 +30,8 @@ if [ "$1" -eq 0 ] || [ "$1" -eq 1 ] ; then
                 xset dpms force off
             else
                 xset dpms force on
+                sleep 1
+                monitors.sh
             fi
             ;;
         *)
