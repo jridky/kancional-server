@@ -91,11 +91,15 @@ fi
 
 sudo usermod -aG video www-data
 
+# Povolit www-data restartovat startup službu (pro automatický fullscreen restart)
+echo "www-data ALL=(root) NOPASSWD: /usr/bin/systemctl restart startup" > /etc/sudoers.d/donoff
+
 # Na Bookworm+ povolit www-data spouštět wlopm jako pi (pro ovládání displeje z PHP)
 if [ "$IS_BOOKWORM_PLUS" = true ] ; then
-    echo "www-data ALL=(pi) NOPASSWD: /usr/bin/wlopm, /usr/bin/env, /usr/bin/find" > /etc/sudoers.d/donoff
-    chmod 0440 /etc/sudoers.d/donoff
+    echo "www-data ALL=(pi) NOPASSWD: /usr/bin/wlopm, /usr/bin/env, /usr/bin/find" >> /etc/sudoers.d/donoff
 fi
+
+chmod 0440 /etc/sudoers.d/donoff
 
 # Na Bookworm+ nastavit skrytí kurzoru přes labwc
 if [ "$IS_BOOKWORM_PLUS" = true ] ; then

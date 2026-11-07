@@ -117,7 +117,11 @@ function getMessage (event){
         timeout = setTimeout(offScreen, 8800000);
         if(!screen){
             screen = true;
-            $.ajax({url:"/onscreen.php"});
+            $.ajax({url:"/onscreen.php", success: function(){
+                if (window.outerHeight - window.innerHeight > 5) {
+                    $.ajax({url: "/restart.php"});
+                }
+            }});
         }
         displayValue(answer);
     }catch(error){
