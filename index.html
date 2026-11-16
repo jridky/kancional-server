@@ -307,7 +307,7 @@
         .section-dark { background: var(--dark); color: var(--white); }
         .section-alt { background: var(--off-white); }
         .section-header {
-            text-align: center; max-width: 600px;
+            text-align: center; max-width: 650px;
             margin: 0 auto 4rem;
         }
         .section-label {
@@ -608,6 +608,73 @@
         .fade-up.visible { opacity: 1; transform: translateY(0); }
 
         /* ── RESPONSIVE ── */
+        /* ── MAP ── */
+        .map-wrap {
+            max-width: 750px; margin: 0 auto;
+            position: relative;
+        }
+        .map-wrap svg { width: 100%; height: auto; }
+        .map-outline {
+            fill: rgba(192, 57, 43, 0.06);
+            stroke: var(--accent); stroke-width: 1.5;
+            stroke-linejoin: round;
+        }
+        .map-dot {
+            fill: var(--accent); cursor: pointer;
+            transition: r 0.2s;
+        }
+        .map-dot:hover { r: 9; }
+        .map-glow {
+            fill: var(--accent); opacity: 0.25;
+            pointer-events: none;
+        }
+        .map-tooltip {
+            position: absolute;
+            background: var(--gray-900); color: var(--white);
+            font-size: 0.8rem; padding: 0.5rem 0.85rem;
+            border-radius: 6px; pointer-events: none;
+            opacity: 0; transition: opacity 0.2s;
+            white-space: nowrap; transform: translate(-50%, -120%);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .map-tooltip::after {
+            content: ''; position: absolute;
+            top: 100%; left: 50%; transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: var(--gray-900);
+        }
+        .map-counter {
+            text-align: center; margin-top: 2.5rem;
+            font-size: 1.1rem; color: var(--gray-600);
+        }
+        .map-counter strong {
+            font-size: 2.5rem; font-weight: 800;
+            color: var(--accent); display: block;
+            margin-bottom: 0.25rem;
+        }
+        .map-dot-prep {
+            fill: #3498db; cursor: pointer;
+            transition: r 0.2s;
+        }
+        .map-dot-prep:hover { r: 9; }
+        .map-glow-prep {
+            fill: #3498db; opacity: 0.25;
+            pointer-events: none;
+        }
+        .map-legend {
+            display: flex; justify-content: center; gap: 2.5rem;
+            margin-top: 1.5rem;
+        }
+        .map-legend-item {
+            display: flex; align-items: center; gap: 0.5rem;
+            font-size: 0.9rem; color: var(--gray-600);
+        }
+        .map-legend-dot {
+            width: 12px; height: 12px; border-radius: 50%;
+        }
+        .map-legend-dot--active { background: var(--accent); }
+        .map-legend-dot--prep { background: #3498db; }
+
         @media (max-width: 900px) {
             .how-grid { grid-template-columns: 1fr; gap: 2rem; }
             .devices-grid { grid-template-columns: 1fr 1fr; }
@@ -630,12 +697,13 @@
 
 <!-- NAV -->
 <nav id="nav">
-    <span class="nav-logo">Kancionál</span>
+    <span class="nav-logo">Číselníky: Kancionál - Server</span>
     <ul class="nav-links">
         <li><a href="#jak-to-funguje">Jak to funguje</a></li>
         <li><a href="#zarizeni">Zařízení</a></li>
         <li><a href="#aplikace">Aplikace</a></li>
         <li><a href="#instalace">Instalace</a></li>
+        <li><a href="#mapa">Mapa</a></li>
         <li><a href="#kontakt">Kontakt</a></li>
         <li><a href="https://github.com/jridky/kancional-server">GitHub</a></li>
     </ul>
@@ -1054,12 +1122,37 @@
     </div>
 </section>
 
+<!-- MAP -->
+<section class="section section-alt" id="mapa">
+    <div class="wrap">
+        <div class="section-header fade-up">
+            <h2 class="section-label">Kde již číselníky najdete</h2>
+            <p>Na mapě uvádím místa, kde jsem instalaci zajišťoval nebo s ní pomáhal.</p>
+            <p>Jelikož je možné si číselníky nainstalovat a provozovat svépomocí, mohou existovat i další místa, kde se číselníky používají.</p>
+        </div>
+        <div class="map-wrap fade-up">
+            <div class="map-tooltip" id="mapTooltip"></div>
+            <svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg">
+                <path class="map-outline" d="M276.8,390.0 L277.4,397.0 L275.5,400.0 L271.9,400.1 L266.7,393.2 L262.1,396.9 L256.4,394.8 L253.2,390.1 L250.7,390.9 L251.9,393.6 L249.5,399.0 L245.1,398.5 L245.3,401.6 L242.4,401.2 L240.0,404.6 L234.1,400.2 L214.3,398.2 L212.0,395.5 L212.5,393.3 L208.9,391.5 L213.1,389.5 L213.6,386.3 L195.5,372.2 L189.8,371.4 L187.9,363.0 L185.1,362.4 L182.5,354.6 L176.1,355.5 L172.0,345.1 L170.1,346.4 L167.8,342.2 L162.4,341.4 L159.2,346.3 L152.5,341.6 L150.2,339.4 L149.7,329.8 L139.3,319.7 L134.2,320.5 L129.0,317.3 L127.9,311.5 L122.0,307.0 L119.2,300.4 L114.7,297.9 L114.2,291.9 L105.9,285.9 L99.9,284.9 L99.5,287.6 L90.1,285.3 L88.0,278.3 L78.2,272.3 L76.1,266.1 L77.1,259.0 L71.7,256.7 L69.1,244.6 L65.9,244.8 L65.3,234.5 L57.7,231.9 L54.0,226.1 L53.9,223.2 L60.6,219.6 L60.6,212.5 L63.0,211.9 L67.8,199.5 L60.8,196.8 L63.2,191.7 L62.2,190.2 L56.6,189.8 L56.6,187.1 L46.4,182.5 L45.6,179.5 L40.2,178.7 L41.5,176.0 L34.4,171.2 L33.8,166.0 L35.8,162.3 L29.6,152.1 L23.9,150.0 L28.5,145.8 L24.7,139.8 L32.8,139.2 L34.4,146.6 L39.5,146.8 L40.6,150.0 L38.1,150.6 L43.3,154.3 L41.5,158.0 L42.9,161.0 L47.3,161.7 L46.9,151.1 L49.6,151.2 L48.9,148.2 L53.6,143.2 L53.4,139.3 L62.2,135.0 L64.4,127.9 L79.9,125.0 L83.2,127.9 L85.8,122.7 L91.6,120.1 L93.1,122.8 L94.0,118.5 L106.4,126.9 L113.3,120.5 L114.5,111.0 L119.6,112.5 L124.2,109.8 L130.2,112.0 L135.3,98.7 L142.6,100.3 L142.7,96.3 L147.8,93.3 L147.2,89.9 L156.2,97.2 L161.9,91.6 L160.8,89.4 L163.9,85.9 L162.2,81.8 L175.4,77.7 L179.5,80.0 L184.5,77.1 L193.8,78.4 L194.5,76.1 L198.0,75.8 L197.0,71.9 L198.3,68.5 L201.9,69.0 L206.9,64.5 L210.8,66.9 L215.4,65.6 L229.3,58.6 L230.3,54.4 L233.6,53.2 L237.2,54.9 L245.2,52.6 L246.0,47.0 L237.8,44.4 L237.0,42.7 L239.0,39.7 L232.7,39.4 L235.4,33.4 L234.2,31.5 L236.9,29.2 L247.2,34.7 L251.5,32.1 L255.3,34.0 L255.2,31.0 L256.8,31.0 L255.9,34.2 L265.6,39.4 L262.2,49.7 L270.5,47.8 L270.7,51.7 L267.5,58.8 L281.7,64.6 L284.9,64.1 L287.1,56.5 L304.2,56.6 L304.9,51.4 L303.2,49.3 L305.6,46.5 L305.9,42.0 L301.1,39.0 L306.0,32.7 L316.5,39.0 L320.5,34.4 L320.9,39.6 L327.2,37.7 L332.9,43.7 L330.0,49.8 L333.8,57.9 L339.5,60.9 L341.0,70.9 L347.3,65.1 L350.5,68.9 L368.3,73.2 L371.1,76.4 L382.9,74.2 L387.2,86.3 L399.8,84.8 L402.7,93.0 L399.7,95.7 L403.0,97.7 L409.5,88.3 L412.9,88.1 L418.1,93.2 L421.3,92.4 L423.2,86.8 L433.7,88.3 L443.6,101.3 L439.6,102.1 L439.3,108.0 L435.3,112.6 L430.6,111.6 L429.0,115.6 L424.7,116.6 L419.6,122.9 L421.3,126.1 L424.5,126.1 L427.9,132.4 L435.4,130.6 L437.5,138.2 L443.5,139.9 L453.5,153.0 L454.7,162.9 L461.7,170.8 L470.0,172.1 L481.4,156.3 L484.9,157.9 L487.3,154.1 L492.8,153.8 L494.7,150.8 L496.8,155.1 L498.9,153.9 L497.2,149.0 L498.6,147.4 L497.7,143.4 L490.8,140.3 L488.4,129.6 L483.5,126.4 L487.2,120.3 L494.5,124.8 L496.8,123.3 L507.7,126.7 L510.8,130.4 L516.6,129.5 L516.4,132.9 L524.0,139.6 L530.6,138.2 L529.6,145.0 L531.0,147.9 L534.2,145.1 L537.6,145.9 L539.2,149.7 L544.8,146.2 L556.0,147.6 L563.1,142.6 L562.5,138.8 L565.4,139.0 L569.3,142.0 L567.5,149.4 L570.7,152.0 L570.1,156.5 L554.1,163.5 L559.7,170.9 L564.2,170.0 L568.3,173.1 L572.0,184.5 L576.8,185.8 L576.7,188.4 L580.7,191.6 L585.6,190.8 L592.2,185.2 L597.8,186.7 L597.7,182.0 L593.8,181.6 L596.6,177.6 L602.0,180.9 L604.7,188.4 L608.6,190.1 L609.7,187.4 L613.7,187.3 L614.1,191.7 L620.0,192.8 L620.7,197.1 L623.8,199.9 L626.7,198.0 L625.5,195.1 L634.9,196.8 L640.8,202.0 L648.6,199.3 L648.3,206.5 L651.8,208.3 L648.5,212.9 L654.0,224.2 L653.7,229.1 L657.8,232.0 L661.5,230.9 L662.5,235.0 L671.6,236.1 L673.6,250.3 L676.2,254.9 L675.4,259.7 L664.2,263.6 L647.2,260.6 L642.5,271.7 L631.9,278.7 L631.6,283.9 L628.3,287.6 L610.5,294.7 L605.0,309.7 L604.1,323.4 L602.0,328.9 L597.7,332.8 L586.1,334.6 L582.9,339.1 L580.7,348.4 L571.8,349.6 L564.2,358.5 L555.8,359.4 L546.7,366.0 L541.9,360.9 L532.0,363.2 L516.2,355.3 L507.9,361.5 L506.0,368.0 L501.6,371.3 L497.1,382.4 L494.3,384.5 L492.7,392.3 L489.9,394.3 L487.7,379.7 L477.9,381.5 L470.6,376.7 L466.5,378.3 L464.7,370.3 L457.9,370.0 L452.8,365.3 L450.7,367.7 L445.1,366.1 L442.7,372.6 L437.2,378.1 L433.8,375.6 L432.5,377.7 L410.6,375.6 L400.2,370.5 L395.9,366.6 L396.7,364.0 L390.4,362.2 L390.8,360.2 L385.6,358.5 L385.4,355.8 L379.5,356.2 L377.0,359.6 L370.8,359.1 L363.4,352.7 L353.8,350.3 L349.5,344.6 L331.2,338.2 L329.5,344.4 L319.7,346.2 L319.4,338.4 L306.3,334.3 L303.4,336.0 L304.1,338.6 L302.0,341.8 L303.6,351.9 L301.7,356.2 L302.8,361.0 L299.8,368.9 L302.3,371.6 L300.0,373.7 L286.0,370.5 L285.8,377.3 L278.8,382.7 Z"/>
+                <g id="mapDots"></g>
+            </svg>
+            <div class="map-legend">
+                <div class="map-legend-item"><span class="map-legend-dot map-legend-dot--active"></span> V provozu</div>
+                <div class="map-legend-item"><span class="map-legend-dot map-legend-dot--prep"></span> V přípravě</div>
+            </div>
+            <div class="map-counter">
+                <strong id="mapCount"></strong>
+                známých instalací po celé České republice
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- SUPPORT -->
 <section class="section section-dark" id="kontakt">
     <div class="wrap">
         <div class="support-box fade-up">
-            <span class="section-label">Potřebujete pomoci?</span>
-            <h2>Pomohu vám se vším</h2>
+            <h2 class="section-label">Potřebujete pomoci?</h2>
             <p>
                 Pokud zvažujete zavedení číselníku ve vaší farnosti a nevíte si rady,
                 neváhejte se ozvat. Rád vám pomohu s celým procesem od výběru
@@ -1335,6 +1428,73 @@
         requestAnimationFrame(fitAllScreens);
 
         window.addEventListener('resize', () => render(false));
+    })();
+
+    // ── Map: data-driven dots ──
+    // To add a new point, just add a line to this array:
+    //   {name: "...", lat: XX.XXXX, lon: XX.XXXX, prep: false}
+    // prep: false = active (red), prep: true = in preparation (blue)
+    (() => {
+        const places = [
+            {name: "Nanebevstoupení Páně, Karlovy Vary", lat: 50.233, lon: 12.850, prep: false},
+            {name: "Nejsvětější Trojice, Brno-Královo Pole", lat: 49.2186, lon: 16.5997, prep: false},
+            {name: "sv. Vavřinec, Brno-Řečkovice", lat: 49.2467, lon: 16.5833, prep: false},
+            {name: "Všech svatých, Ořechov", lat: 49.1333, lon: 16.5167, prep: false},
+            {name: "sv. Václav, Křižanov", lat: 49.3833, lon: 16.1167, prep: false},
+            {name: "sv. Jiří, Velké Opatovice", lat: 49.6167, lon: 16.6833, prep: false},
+            {name: "sv. Florián, Skaštice", lat: 49.3000, lon: 17.3833, prep: false},
+            {name: "sv. Jan Křtitel, Vysoké Popovice", lat: 49.2667, lon: 16.3667, prep: false},
+            {name: "sv. Václav, Nové Veselí", lat: 49.5167, lon: 15.8833, prep: false},
+            {name: "sv. Máří Magdaleny, Kuřim", lat: 49.2978, lon: 16.5311, prep: true},
+            {name: "Narození Panny Marie, Protivanov", lat: 49.4833, lon: 16.8333, prep: true},
+            {name: "Nanebevzetí Panny Marie, Strážnice", lat: 48.9000, lon: 17.3167, prep: true},
+            {name: "Svatého Kříže Na Příkopě, Praha", lat: 50.0833, lon: 14.4278, prep: true},
+        ];
+
+        const NS = 'http://www.w3.org/2000/svg';
+        const g = document.getElementById('mapDots');
+        const toX = lon => (lon - 12.0) * 96.4 + 15;
+        const toY = lat => (51.15 - lat) * 150 + 15;
+
+        places.forEach(p => {
+            const cx = toX(p.lon), cy = toY(p.lat);
+            const glow = document.createElementNS(NS, 'circle');
+            glow.setAttribute('cx', cx);
+            glow.setAttribute('cy', cy);
+            glow.setAttribute('r', 14);
+            glow.setAttribute('class', p.prep ? 'map-glow-prep' : 'map-glow');
+            g.appendChild(glow);
+        });
+        places.forEach(p => {
+            const cx = toX(p.lon), cy = toY(p.lat);
+            const dot = document.createElementNS(NS, 'circle');
+            dot.setAttribute('cx', cx);
+            dot.setAttribute('cy', cy);
+            dot.setAttribute('r', 6);
+            dot.setAttribute('class', p.prep ? 'map-dot-prep' : 'map-dot');
+            dot.dataset.name = p.name;
+            g.appendChild(dot);
+        });
+
+        const active = places.filter(p => !p.prep).length;
+        const prep = places.filter(p => p.prep).length;
+        document.getElementById('mapCount').textContent = prep > 0 ? active + ' + ' + prep : String(active);
+
+        const tooltip = document.getElementById('mapTooltip');
+        const wrap = document.querySelector('.map-wrap');
+        g.querySelectorAll('.map-dot, .map-dot-prep').forEach(dot => {
+            dot.addEventListener('mouseenter', () => {
+                const svgRect = dot.closest('svg').getBoundingClientRect();
+                const wrapRect = wrap.getBoundingClientRect();
+                const cx = parseFloat(dot.getAttribute('cx'));
+                const cy = parseFloat(dot.getAttribute('cy'));
+                tooltip.textContent = dot.dataset.name;
+                tooltip.style.left = (svgRect.left - wrapRect.left + cx * (svgRect.width / 700)) + 'px';
+                tooltip.style.top = (svgRect.top - wrapRect.top + cy * (svgRect.height / 420)) + 'px';
+                tooltip.style.opacity = '1';
+            });
+            dot.addEventListener('mouseleave', () => { tooltip.style.opacity = '0'; });
+        });
     })();
 </script>
 
