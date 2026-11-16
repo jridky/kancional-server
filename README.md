@@ -1,5 +1,7 @@
 # Kancionál - server
 
+[![Webová stránka projektu](https://img.shields.io/badge/Webov%C3%A1_str%C3%A1nka-jridky.github.io-c0392b?style=for-the-badge&logo=github)](https://jridky.github.io/kancional-server/)
+
 V následujícím repozitáři naleznete zdrojové kódy pro Kancionál server,
 který je zapotřebí mít k dispozici v každém kostele, kde chcete mít dostupné centrální nastavování skladeb všem připojeným účastníkům bohoslužeb nebo i jen pro ovládání číselníků.
 
