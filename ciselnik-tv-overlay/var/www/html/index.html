@@ -15,36 +15,22 @@ html, body{
    margin: 0px;
 }
 
-#number, #verse{
+#number, #psalm, #verse, #songbook{
+   text-align: center;
+   background: rgba(0,0,0,0.8);
+}
+
+#number, #verse, #songbook{
    margin: 0px;
    padding: 0px;
-   text-align: center;
    position: fixed;
    top: 0px;
    right: 0px;
-   background: black;
 }
 
 .radius{
    border-bottom-left-radius: 15px;
    border-bottom-right-radius: 15px;
-}
-
-#verse{
-   top: 14%;
-   width: 20%;
-   line-height: 1.5em;
-   height: 5%;
-   padding-bottom: 3%;
-}
-
-#psalm {
-    position: fixed;
-    bottom: 0px;
-    padding: 0px;
-    margin: 0px;
-    background: rgba(0,0,0,0.8);
-    width: 100%;
 }
 
 #number{
@@ -61,12 +47,39 @@ html, body{
 }
 
 #verse{
-  font-size: 4vw;
+   top: 14%;
+   width: 20%;
+   line-height: 1.5em;
+   height: 5%;
+   padding-bottom: 3%;
+   font-size: 4vw;
 }
 
-#psalm{
-  font-size: 10em;
-  height: 20%;
+#songbook{
+   top: 22%;
+   width: 20%;
+   line-height: 1.5em;
+   height: 4%;
+   padding-bottom: 2%;
+   font-size: 3vw;
+   overflow: hidden;
+}
+
+#psalm {
+    position: fixed;
+    bottom: 0px;
+    padding: 0px;
+    margin: 0px;
+    background: rgba(0,0,0,0.8);
+    width: 100%;
+    overflow: hidden;
+    font-size: 10em;
+    height: 20%;
+}
+
+p {
+  margin: 0px;
+  padding: 0px;
 }
 
 .centered{
@@ -78,8 +91,13 @@ html, body{
 }
 
 #psalm.solo{
-   top:10%;
-   height: 75%;
+   height: 100%;
+   margin: 0px;
+   padding: 0px;
+   text-align: center;
+   align-items: center;
+   justify-content: center;
+   overflow: hidden;
 }
 </style>
 </head>
@@ -89,8 +107,10 @@ html, body{
 <div class="centered"></div>
 </div>
 <div id="verse" class="radius">
- <div class="centered">
- </div>
+<div class="centered"></div>
+</div>
+<div id="songbook" class="radius">
+<div class="centered"></div>
 </div>
 <div id="psalm">
 <div class="centered">
@@ -101,52 +121,62 @@ html, body{
 <script>
 var timeout, socket = false;
 $(function(){
-	$("#number").css("color","white");
-    $("#psalm, #verse, #number").hide();
+    $("#number").css("color","white");
+    $("#psalm, #verse, #number, #songbook").hide();
     var video = document.querySelector("#video");
 
     checkSocket();
     setInterval(checkSocket, 1800);
     if (navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(function (stream) {
-                    video.srcObject = stream;
-                })
-                .catch(function (error) {
-                      console.log("Something went wrong!");
+        navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 19200 }, height: { ideal: 10800 } } })
+            .then(function (stream) {
+                video.srcObject = stream;
+            })
+            .catch(function (error) {
+                console.log("Something went wrong!");
             });
     }
 });
 
 function checkSocket(){
-	if(socket != false){
-		if(socket.readyState != WebSocket.CLOSED){
-			return;
-		}
-	}
-	socket = new WebSocket('ws://kancional.local:2020');
-	socket.addEventListener('message', getMessage, event);
+    if(socket != false){
+        if(socket.readyState != WebSocket.CLOSED){
+            return;
+        }
+    }
+    socket = new WebSocket('ws://kancional.local:2020');
+    socket.addEventListener('message', getMessage);
 }
 
 function getMessage (event){
-	try{
-		var answer = JSON.parse(event.data);
-		if(timeout != false){
-			clearTimeout(timeout);
-		}
-		timeout = setTimeout(offScreen, 8800000);
-		displayValue(answer);
-	}catch(error){
-		offScreen();
-	}
+    try{
+        var answer = JSON.parse(event.data);
+        if(timeout != false){
+            clearTimeout(timeout);
+        }
+        timeout = setTimeout(offScreen, 8800000);
+        displayValue(answer);
+    }catch(error){
+        offScreen();
+    }
 }
 
 function offScreen(){
-	clearTimeout(timeout);
-	timeout = false;
-    $("#psalm, #verse, #number").hide();
+    clearTimeout(timeout);
+    timeout = false;
+    $("#psalm, #verse, #number, #songbook").hide();
     $("#video").show();
     $("#psalm").removeClass("solo");
+}
+
+function fitText(el, startSize) {
+    el.css("font-size", startSize);
+    var inner = el.children().first();
+    while (inner.outerHeight() > el.innerHeight() || inner.outerWidth() > el.innerWidth()) {
+        var value = parseInt(el.css("font-size")) - 10;
+        if (value <= 0) break;
+        el.css("font-size", value + "px");
+    }
 }
 
 function displayValue(answer){
@@ -158,9 +188,9 @@ function displayValue(answer){
         $("#psalm").removeClass("solo");
     }
 
-	if(answer.psalm == ""){
+    if(answer.psalm == "" && (answer.verseText == undefined || answer.verseText == "")){
         if(answer.song == ""){
-            $("#number, #verse").hide();
+            $("#number, #verse, #songbook").hide();
         } else {
             $("#number .centered").html(answer.song);
             if(answer.verse != "" && answer.verse != "0"){
@@ -171,30 +201,44 @@ function displayValue(answer){
                 }
                 $("#verse").show();
                 $("#number").removeClass("radius");
+                if(answer.songbook){
+                    $("#songbook .centered").html(answer.songbook);
+                    var verseBottom = $("#verse").position().top + $("#verse").outerHeight(true);
+                    $("#songbook").css("top", verseBottom + "px");
+                    $("#songbook").show();
+                    fitText($("#songbook"), "3vw");
+                    $("#verse").removeClass("radius");
+                } else {
+                    $("#songbook").hide();
+                    $("#verse").addClass("radius");
+                }
             }else{
                 $("#verse .centered").html("");
                 $("#verse").hide();
-                $("#number").addClass("radius");
+                if(answer.songbook){
+                    $("#songbook .centered").html(answer.songbook);
+                    $("#songbook").css("top", "14%");
+                    $("#songbook").show();
+                    fitText($("#songbook"), "3vw");
+                    $("#number").removeClass("radius");
+                } else {
+                    $("#songbook").hide();
+                    $("#number").addClass("radius");
+                }
             }
             $("#number").show();
         }
         $("#psalm").hide();
     }else{
-		$("#psalm .centered").html(answer.psalm);
-		$("#number, #verse").hide();
-		$("#psalm").show();
-		$("#psalm").css("font-size", "30em");
-		while( $("#psalm").innerHeight() < $("#psalm").prop("scrollHeight") || $("#psalm").innerWidth() < $("#psalm").prop("scrollWidth")){
-			var value = parseInt($("#psalm").css("font-size"));
-			value = value - 10;
-			$("#psalm").css("font-size", value+"px");
-		}
-	}
+        $("#psalm .centered").html(answer.psalm != "" ? answer.psalm : answer.verseText);
+        $("#number, #verse, #songbook").hide();
+        $("#psalm").show();
+        fitText($("#psalm"), "30em");
+    }
 
-	if(jQuery.isEmptyObject(answer)){
-		offScreen();
-	}
+    if(jQuery.isEmptyObject(answer)){
+        offScreen();
+    }
 }
 </script>
 </html>
-
